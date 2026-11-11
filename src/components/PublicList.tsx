@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { firebaseConfigured, getDb } from "@/lib/firebase";
@@ -34,6 +35,7 @@ export default function PublicList({ col, lang }: { col: "courses" | "teachers" 
         <h2 className="font-serif text-xl text-sage-900">{tx(d, col === "courses" ? "title" : "name", lang)}</h2>
         {col === "teachers" && <p className="mt-1 text-sm text-gold-600">{tx(d, "qualifications", lang)}</p>}
         <p className="mt-2 whitespace-pre-line text-sage-700">{tx(d, col === "courses" ? "description" : "bio", lang)}</p>
+        {col === "courses" && <Link href={`/${lang}/pay?course=${d.id}`} className="mt-3 inline-block rounded bg-sage-700 px-4 py-2 text-sm text-white">{lang === "bn" ? "ভর্তি / পেমেন্ট" : "Enroll / Pay"}</Link>}
         {col === "courses" && tx(d, "price", lang) && <p className="mt-3 font-medium text-sage-900">{tx(d, "price", lang)}</p>}
       </article>
     ))}</div>

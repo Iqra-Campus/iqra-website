@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { collection, doc, getDocs, orderBy, query, updateDoc } from "firebase/firestore";
 import { getDb } from "@/lib/firebase";
 import { useAuth } from "@/lib/auth";
+import PaymentsPanel from "@/components/PaymentsPanel";
 import ContentManager, { type Field } from "@/components/ContentManager";
 
 type Booking = { id: string; name: string; email: string; phone: string; studentAge: number; country: string; courseId: string; preferredDate: string; preferredTime: string; timeZone: string; message?: string; status: string };
@@ -15,6 +16,10 @@ const modules: Record<string, { col: string; singletonId?: string; fields: Field
     { key: "price", label: "Price text", bilingual: true }, { key: "order", label: "Display order", number: true }] },
   Teachers: { col: "teachers", fields: [
     { key: "name", label: "Name", bilingual: true }, { key: "qualifications", label: "Qualifications", bilingual: true }, { key: "bio", label: "Biography", bilingual: true, multiline: true }, { key: "order", label: "Display order", number: true }] },
+  "Payment Methods": { col: "paymentMethods", fields: [
+    { key: "name", label: "Method name (e.g. bKash, Bank)", bilingual: true }, { key: "accountNumber", label: "Account / number" }, { key: "accountName", label: "Account holder name" },
+    { key: "bankName", label: "Bank name (if bank)" }, { key: "branch", label: "Branch (optional)" }, { key: "swift", label: "SWIFT / IBAN (optional)" },
+    { key: "currency", label: "Currency (BDT, USD, EGP...)" }, { key: "instructions", label: "Instructions for students", bilingual: true, multiline: true }, { key: "order", label: "Display order", number: true }] },
   FAQs: { col: "faqs", fields: [
     { key: "question", label: "Question", bilingual: true }, { key: "answer", label: "Answer", bilingual: true, multiline: true }, { key: "order", label: "Display order", number: true }] },
 };
@@ -51,11 +56,12 @@ export default function Admin() {
     <div className="mx-auto max-w-6xl px-4 py-10">
       <h1 className="font-serif text-3xl text-sage-900">Admin Dashboard</h1>
       <div className="mt-4 flex flex-wrap gap-2">
-        {["Bookings", ...Object.keys(modules)].map((n) => (
+        {["Bookings", "Payments", ...Object.keys(modules)].map((n) => (
           <button key={n} onClick={() => setTab(n)} className={`rounded px-3 py-1 text-sm ${tab === n ? "bg-sage-700 text-white" : "border border-sage-300"}`}>{n}</button>
         ))}
       </div>
-      {tab !== "Bookings" && <div className="mt-6"><ContentManager key={tab} {...modules[tab]} /></div>}
+      {tab === "Payments" && <div className="mt-6"><PaymentsPanel /></div>}
+      {tab !== "Bookings" && tab !== "Payments" && <div className="mt-6"><ContentManager key={tab} {...modules[tab]} /></div>}
       {tab === "Bookings" && <h2 className="mt-6 text-xl text-sage-900">Trial class bookings</h2>}
       {tab === "Bookings" && err && <p role="alert" className="mt-3 text-red-700">{err} <button className="underline" onClick={load}>Retry</button></p>}
       {tab === "Bookings" && (rows.length === 0 && !err ? <p className="mt-4 text-sage-700">No booking requests yet.</p> : (
