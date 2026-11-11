@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
 import { isLocale, ui } from "@/lib/i18n";
 import EmptyState from "@/components/EmptyState";
+import PublicList from "@/components/PublicList";
 import { siteContact as c } from "@/config/site";
 
-const known = ["about", "courses", "teachers", "pricing", "reviews", "contact", "trial", "login"] as const;
+const known = ["about", "courses", "teachers", "pricing", "reviews", "contact", "faq", "trial", "login"] as const;
 type Slug = (typeof known)[number];
 
 export default async function Page({ params }: { params: Promise<{ lang: string; page: string }> }) {
@@ -11,10 +12,10 @@ export default async function Page({ params }: { params: Promise<{ lang: string;
   if (!isLocale(lang) || !(known as readonly string[]).includes(page)) notFound();
   const t = ui[lang];
   const slug = page as Slug;
-  const title = slug === "trial" ? t.trial : slug === "login" ? t.login : t.nav[slug];
+  const title = slug === "trial" ? t.trial : slug === "login" ? t.login : slug === "faq" ? (lang === "bn" ? "প্রশ্নোত্তর" : "FAQ") : t.nav[slug];
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-4xl px-4 py-12">
       <h1 className="text-center font-serif text-3xl text-sage-900">{title}</h1>
       {slug === "contact" ? (
         <ul className="mx-auto mt-8 max-w-md space-y-3 rounded border border-gold-200 bg-white p-6 text-sage-900">
@@ -24,6 +25,8 @@ export default async function Page({ params }: { params: Promise<{ lang: string;
           <li><a className="underline" href={c.instagram} target="_blank" rel="noopener noreferrer">{t.instagram}</a></li>
           <li><a className="underline" href={c.facebook} target="_blank" rel="noopener noreferrer">{t.facebook}</a></li>
         </ul>
+      ) : slug === "courses" || slug === "teachers" || slug === "faq" ? (
+        <PublicList col={slug === "faq" ? "faqs" : slug} lang={lang} />
       ) : (
         <EmptyState lang={lang} />
       )}
