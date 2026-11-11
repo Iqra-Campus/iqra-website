@@ -1,7 +1,7 @@
 # Firebase Setup
 
 1. Firebase Console → Build → Authentication → Sign-in method → enable **Email/Password**.
-2. Firestore Database → Rules → paste the contents of `firestore.rules` → **Publish**.
+2. Firestore Database → Rules → paste the rules provided by the developer → **Publish** (rules are not kept in this public repository).
 3. Project settings → Your apps → Web app → copy config into Vercel/`.env.local` (see `.env.example`).
 4. Authentication → Settings → Authorized domains → add your Vercel domain.
 5. First Super Admin (one-time): sign up/create your own user in Authentication, then in Firestore create
