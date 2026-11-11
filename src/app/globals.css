@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html { scroll-behavior: smooth; }
+body { background: #FBF8F1; color: #2F4636; -webkit-font-smoothing: antialiased; }
+.islamic-pattern {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(167,133,50,.18) 1px, transparent 0);
+  background-size: 22px 22px;
+}
