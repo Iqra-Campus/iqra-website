@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- Helpers ----------
+    function signedIn() { return request.auth != null; }
+    function me() { return get(/databases/$(database)/documents/users/$(request.auth.uid)).data; }
+    function hasProfile() { return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)); }
+    function active() { return hasProfile() && me().status == 'active'; }
+    function role() { return me().role; }
+    function isSuperAdmin() { return active() && role() == 'superAdmin'; }
+    function isAdmin() { return active() && role() in ['superAdmin', 'admin']; }
+    function isStaff() { return active() && role() in ['superAdmin', 'admin', 'teacher']; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+    function isStr(v, min, max) { return v is string && v.size() >= min && v.size() <= max; }
+
+    // ---------- Public content: only explicitly published documents are public ----------
+    // Admin manages everything. Public queries MUST filter with where('status','==','published').
+    match /{col}/{docId} {
+      allow read: if col in ['siteSettings','pages','courses','teachers','faqs','reviews','blogPosts','announcements']
+                  && (resource.data.status == 'published' || isAdmin());
+      allow create, update: if col in ['siteSettings','pages','courses','teachers','faqs','reviews','blogPosts','announcements'] && isAdmin();
+      allow delete: if col in ['siteSettings','pages','courses','teachers','faqs','reviews','blogPosts','announcements'] && isAdmin();
+    }
+
+    // ---------- Users ----------
+    // Created and role/status-changed only by trusted server code or the Firebase Console.
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if false;
+      allow update: if isOwner(uid)
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName','phone','country','timeZone']);
+      allow delete: if false;
+    }
+
+    // ---------- Free trial bookings ----------
+    // Anyone may submit a request; only admins read/manage. Status is forced to 'pending'.
+    match /bookings/{bookingId} {
+      allow create: if request.resource.data.keys().hasOnly([
+            'name','email','phone','studentAge','country','courseId','teacherId',
+            'preferredDate','preferredTime','timeZone','message','status','createdAt'])
+          && request.resource.data.keys().hasAll([
+            'name','email','phone','studentAge','country','courseId','preferredDate','preferredTime','timeZone','status','createdAt'])
+          && isStr(request.resource.data.name, 2, 100)
+          && isStr(request.resource.data.email, 5, 200) && request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+          && isStr(request.resource.data.phone, 5, 30)
+          && request.resource.data.studentAge is int && request.resource.data.studentAge >= 3 && request.resource.data.studentAge <= 100
+          && isStr(request.resource.data.country, 2, 80)
+          && isStr(request.resource.data.courseId, 1, 100)
+          && isStr(request.resource.data.preferredDate, 8, 10)
+          && isStr(request.resource.data.preferredTime, 3, 8)
+          && isStr(request.resource.data.timeZone, 3, 60)
+          && (!('teacherId' in request.resource.data) || isStr(request.resource.data.teacherId, 1, 100))
+          && (!('message' in request.resource.data) || isStr(request.resource.data.message, 0, 1000))
+          && request.resource.data.status == 'pending'
+          && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ---------- Payments (manual verification; clients never set status/verified amounts) ----------
+    match /paymentRequests/{id} {
+      allow create: if signedIn()
+          && request.resource.data.keys().hasOnly(['userId','courseId','amount','currency','method','reference','note','status','createdAt'])
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.status == 'pending'
+          && request.resource.data.createdAt == request.time;
+      allow read: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid);
+      allow update, delete: if false;   // approval happens on trusted server code
+    }
+    match /paymentLedger/{id} { allow read: if isAdmin(); allow write: if false; }
+    match /enrollments/{id}  { allow read: if isAdmin() || (signedIn() && resource.data.userId == request.auth.uid); allow write: if false; }
+    match /notifications/{id} {
+      allow read: if signedIn() && resource.data.userId == request.auth.uid;
+      allow update: if signedIn() && resource.data.userId == request.auth.uid
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+      allow create, delete: if false;
+    }
+
+    // ---------- Audit logs: append by trusted server only, read by Super Admin ----------
+    match /auditLogs/{id} { allow read: if isSuperAdmin(); allow write: if false; }
+
+    // ---------- Everything else is denied until its feature is built ----------
+    match /{document=**} { allow read, write: if false; }
+  }
+}
