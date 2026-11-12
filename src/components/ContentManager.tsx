@@ -15,7 +15,7 @@ const flat = (item: Item | null, fields: Field[]) => {
   return v;
 };
 
-export default function ContentManager({ col, fields, singletonId }: { col: string; fields: Field[]; singletonId?: string }) {
+export default function ContentManager({ col, fields, singletonId, prefill }: { col: string; fields: Field[]; singletonId?: string; prefill?: Record<string, { en: string; bn: string }> }) {
   const [items, setItems] = useState<Item[]>([]);
   const [edit, setEdit] = useState<{ id: string | null; v: Record<string, string>; status: string } | null>(null);
   const [msg, setMsg] = useState("");
@@ -31,7 +31,11 @@ export default function ContentManager({ col, fields, singletonId }: { col: stri
   useEffect(() => { load(); }, [load]);
   useEffect(() => { if (singletonId && items.length >= 0) setEdit((e) => e ?? null); }, [singletonId, items]);
 
-  const open = (item: Item | null) => setEdit({ id: item?.id ?? singletonId ?? null, v: flat(item, fields), status: item?.status ?? "draft" });
+  const open = (item: Item | null) => {
+    const v = flat(item, fields);
+    if (!item && prefill) for (const [k, t] of Object.entries(prefill)) { v[`${k}.en`] = t.en; v[`${k}.bn`] = t.bn; }
+    setEdit({ id: item?.id ?? singletonId ?? null, v, status: item?.status ?? "draft" });
+  };
 
   async function save() {
     if (!edit) return;

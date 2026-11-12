@@ -8,19 +8,20 @@ import { downloadCsv } from "@/lib/csv";
 import CertificatesPanel from "@/components/CertificatesPanel";
 import HomeworkPanel from "@/components/HomeworkPanel";
 import UsersPanel from "@/components/UsersPanel";
+import { defaultPages } from "@/content/defaults";
 import SchedulePanel from "@/components/SchedulePanel";
 import PaymentsPanel from "@/components/PaymentsPanel";
 import ContentManager, { type Field } from "@/components/ContentManager";
 
 type Booking = { id: string; name: string; email: string; phone: string; studentAge: number; country: string; courseId: string; preferredDate: string; preferredTime: string; timeZone: string; message?: string; status: string };
-const modules: Record<string, { col: string; singletonId?: string; fields: Field[] }> = {
+const modules: Record<string, { col: string; singletonId?: string; fields: Field[]; prefill?: Record<string, { en: string; bn: string }> }> = {
   Home: { col: "siteSettings", singletonId: "home", fields: [
     { key: "heroEyebrow", label: "Hero small title", bilingual: true }, { key: "heroTitle", label: "Hero headline", bilingual: true }, { key: "heroText", label: "Hero text", bilingual: true, multiline: true }] },
   About: { col: "pages", singletonId: "about", fields: [{ key: "body", label: "About Us text", bilingual: true, multiline: true }] },
   Pricing: { col: "pages", singletonId: "pricing", fields: [{ key: "body", label: "Pricing text", bilingual: true, multiline: true }] },
-  Terms: { col: "pages", singletonId: "terms", fields: [{ key: "body", label: "Terms & Conditions text", bilingual: true, multiline: true }] },
-  Privacy: { col: "pages", singletonId: "privacy", fields: [{ key: "body", label: "Privacy Policy text", bilingual: true, multiline: true }] },
-  Refund: { col: "pages", singletonId: "refund", fields: [{ key: "body", label: "Refund Policy text", bilingual: true, multiline: true }] },
+  Terms: { col: "pages", singletonId: "terms", prefill: { body: defaultPages.terms }, fields: [{ key: "body", label: "Terms & Conditions text", bilingual: true, multiline: true }] },
+  Privacy: { col: "pages", singletonId: "privacy", prefill: { body: defaultPages.privacy }, fields: [{ key: "body", label: "Privacy Policy text", bilingual: true, multiline: true }] },
+  Refund: { col: "pages", singletonId: "refund", prefill: { body: defaultPages.refund }, fields: [{ key: "body", label: "Refund Policy text", bilingual: true, multiline: true }] },
   Reviews: { col: "reviews", fields: [
     { key: "name", label: "Reviewer name" }, { key: "country", label: "Country" }, { key: "rating", label: "Rating (1-5)", number: true },
     { key: "text", label: "Review text", bilingual: true, multiline: true }, { key: "order", label: "Display order", number: true }] },

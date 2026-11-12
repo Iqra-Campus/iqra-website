@@ -5,6 +5,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { firebaseConfigured, getDb } from "@/lib/firebase";
 import EmptyState from "@/components/EmptyState";
 import type { Locale } from "@/lib/i18n";
+import { defaultFaqs } from "@/content/defaults";
 
 type Doc = Record<string, unknown> & { id: string };
 const tx = (d: Doc, k: string, lang: Locale) => { const o = d[k] as Record<string, string> | undefined; return (o?.[lang] || o?.en || "") as string; };
@@ -21,6 +22,11 @@ export default function PublicList({ col, lang }: { col: "courses" | "teachers" 
 
   if (docs === null) return <p className="py-10 text-center text-sage-700">…</p>;
   if (failed) return <p role="alert" className="py-10 text-center text-red-700">Could not load content. Please refresh.</p>;
+  if (docs.length === 0 && col === "faqs") return (
+    <div className="mt-8 space-y-3">{defaultFaqs.map((f, i) => (
+      <details key={i} className="rounded border border-gold-200 bg-white p-4"><summary className="cursor-pointer font-medium">{f.q[lang]}</summary><p className="mt-2 whitespace-pre-line text-sage-700">{f.a[lang]}</p></details>
+    ))}</div>
+  );
   if (docs.length === 0) return <EmptyState lang={lang} />;
 
   if (col === "faqs") return (
