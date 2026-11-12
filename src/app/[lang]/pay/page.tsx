@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 import { collection, doc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
 import { firebaseConfigured, getDb } from "@/lib/firebase";
 import { useAuth } from "@/lib/auth";
+import StudentClasses from "@/components/StudentClasses";
 
 type D = Record<string, any> & { id: string }; // eslint-disable-line @typescript-eslint/no-explicit-any
 const L = {
@@ -81,6 +82,8 @@ function Inner() {
           <ul className="mt-2 space-y-2">{enr.map((x) => <li key={x.id} className="rounded border border-sage-300 bg-white p-3">{cTitle(x.courseId)}</li>)}</ul>
         )}
       </section>
+
+      <StudentClasses lang={lang} userId={user.uid} courseIds={enr.map((x) => x.courseId)} titles={Object.fromEntries(courses.map((c) => [c.id, tx(c, "title", lang)]))} />
 
       <section>
         <h2 className="font-serif text-xl text-sage-900">{t.pay}</h2>
