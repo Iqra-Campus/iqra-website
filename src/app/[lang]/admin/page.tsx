@@ -24,6 +24,11 @@ const modules: Record<string, { col: string; singletonId?: string; fields: Field
   Reviews: { col: "reviews", fields: [
     { key: "name", label: "Reviewer name" }, { key: "country", label: "Country" }, { key: "rating", label: "Rating (1-5)", number: true },
     { key: "text", label: "Review text", bilingual: true, multiline: true }, { key: "order", label: "Display order", number: true }] },
+  Blog: { col: "blogPosts", fields: [
+    { key: "title", label: "Title", bilingual: true }, { key: "summary", label: "Short summary", bilingual: true },
+    { key: "body", label: "Article text", bilingual: true, multiline: true }, { key: "author", label: "Author name" }] },
+  Announcements: { col: "announcements", fields: [
+    { key: "title", label: "Headline", bilingual: true }, { key: "text", label: "Details", bilingual: true, multiline: true }] },
   Courses: { col: "courses", fields: [
     { key: "title", label: "Course title", bilingual: true }, { key: "description", label: "Description", bilingual: true, multiline: true },
     { key: "price", label: "Price text", bilingual: true }, { key: "order", label: "Display order", number: true }] },

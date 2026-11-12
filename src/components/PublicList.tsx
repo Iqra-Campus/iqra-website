@@ -9,13 +9,13 @@ import type { Locale } from "@/lib/i18n";
 type Doc = Record<string, unknown> & { id: string };
 const tx = (d: Doc, k: string, lang: Locale) => { const o = d[k] as Record<string, string> | undefined; return (o?.[lang] || o?.en || "") as string; };
 
-export default function PublicList({ col, lang }: { col: "courses" | "teachers" | "faqs" | "pages" | "reviews"; lang: Locale }) {
+export default function PublicList({ col, lang }: { col: "courses" | "teachers" | "faqs" | "pages" | "reviews" | "blogPosts" | "announcements"; lang: Locale }) {
   const [docs, setDocs] = useState<Doc[] | null>(null);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
     if (!firebaseConfigured) { setDocs([]); return; }
     getDocs(query(collection(getDb(), col), where("status", "==", "published")))
-      .then((s) => setDocs(s.docs.map((d) => ({ id: d.id, ...(d.data() as object) }) as Doc).sort((a, b) => Number(a.order ?? 0) - Number(b.order ?? 0))))
+      .then((s) => setDocs(s.docs.map((d) => ({ id: d.id, ...(d.data() as object) }) as Doc).sort((a, b) => (col === "blogPosts" || col === "announcements") ? Number((b.createdAt as { seconds?: number } | undefined)?.seconds ?? 0) - Number((a.createdAt as { seconds?: number } | undefined)?.seconds ?? 0) : Number(a.order ?? 0) - Number(b.order ?? 0))))
       .catch(() => { setFailed(true); setDocs([]); });
   }, [col]);
 
@@ -27,6 +27,18 @@ export default function PublicList({ col, lang }: { col: "courses" | "teachers" 
     <div className="mt-8 space-y-3">{docs.map((d) => (
       <details key={d.id} className="rounded border border-gold-200 bg-white p-4"><summary className="cursor-pointer font-medium">{tx(d, "question", lang)}</summary><p className="mt-2 whitespace-pre-line text-sage-700">{tx(d, "answer", lang)}</p></details>
     ))}</div>
+  );
+  if (col === "blogPosts") return (
+    <div className="mt-8 space-y-3">{docs.map((d) => (
+      <details key={d.id} className="rounded border border-gold-200 bg-white p-4">
+        <summary className="cursor-pointer"><span className="font-serif text-lg text-sage-900">{tx(d, "title", lang)}</span>{tx(d, "summary", lang) && <span className="mt-1 block text-sm text-sage-700">{tx(d, "summary", lang)}</span>}</summary>
+        <div className="mt-3 whitespace-pre-line leading-relaxed text-sage-900">{tx(d, "body", lang)}</div>
+        {d.author ? <p className="mt-3 text-xs text-sage-500">— {String(d.author)}</p> : null}
+      </details>))}</div>
+  );
+  if (col === "announcements") return (
+    <div className="mt-8 space-y-3">{docs.map((d) => (
+      <article key={d.id} className="rounded border border-gold-200 bg-white p-4"><p className="font-medium text-sage-900">{tx(d, "title", lang)}</p><p className="mt-1 whitespace-pre-line text-sm text-sage-700">{tx(d, "text", lang)}</p></article>))}</div>
   );
   if (col === "reviews") return (
     <div className="mt-8 grid gap-4 sm:grid-cols-2">{docs.map((d) => (

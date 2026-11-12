@@ -8,7 +8,7 @@ export const ui = {
   en: {
     name: "IQRA CAMPUS",
     tagline: "Connect with Quran & Sunnah",
-    nav: { home: "Home", about: "About Us", courses: "Courses", teachers: "Teachers", pricing: "Pricing", reviews: "Reviews", contact: "Contact" },
+    nav: { home: "Home", about: "About Us", courses: "Courses", teachers: "Teachers", pricing: "Pricing", reviews: "Reviews", blog: "Blog", contact: "Contact" },
     login: "Student Login",
     trial: "Free Trial Class",
     explore: "Explore Courses",
@@ -25,7 +25,7 @@ export const ui = {
   bn: {
     name: "ইকরা ক্যাম্পাস",
     tagline: "কুরআন ও সুন্নাহর সাথে সংযুক্ত হোন",
-    nav: { home: "হোম", about: "আমাদের সম্পর্কে", courses: "কোর্সসমূহ", teachers: "শিক্ষকগণ", pricing: "মূল্য", reviews: "রিভিউ", contact: "যোগাযোগ" },
+    nav: { home: "হোম", about: "আমাদের সম্পর্কে", courses: "কোর্সসমূহ", teachers: "শিক্ষকগণ", pricing: "মূল্য", reviews: "রিভিউ", blog: "ব্লগ", contact: "যোগাযোগ" },
     login: "স্টুডেন্ট লগইন",
     trial: "ফ্রি ট্রায়াল ক্লাস",
     explore: "কোর্স দেখুন",

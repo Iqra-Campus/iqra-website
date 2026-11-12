@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ui, type Locale } from "@/lib/i18n";
 
-const slugs = ["about", "courses", "teachers", "pricing", "reviews", "contact"] as const;
+const slugs = ["about", "courses", "teachers", "pricing", "reviews", "blog", "contact"] as const;
 
 export default function Header({ lang, path }: { lang: Locale; path: string }) {
   const t = ui[lang];
