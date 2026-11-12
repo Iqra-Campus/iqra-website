@@ -5,6 +5,7 @@ import { collection, doc, getDocs, query, serverTimestamp, setDoc, where } from 
 import { firebaseConfigured, getDb } from "@/lib/firebase";
 import { useAuth } from "@/lib/auth";
 import StudentClasses from "@/components/StudentClasses";
+import StudentHomework from "@/components/StudentHomework";
 
 type D = Record<string, any> & { id: string }; // eslint-disable-line @typescript-eslint/no-explicit-any
 const L = {
@@ -84,6 +85,8 @@ function Inner() {
       </section>
 
       <StudentClasses lang={lang} userId={user.uid} courseIds={enr.map((x) => x.courseId)} titles={Object.fromEntries(courses.map((c) => [c.id, tx(c, "title", lang)]))} />
+
+      <StudentHomework lang={lang} userId={user.uid} userName={profile?.displayName || user.email || ""} courseIds={enr.map((x) => x.courseId)} />
 
       <section>
         <h2 className="font-serif text-xl text-sage-900">{t.pay}</h2>

@@ -5,6 +5,7 @@ import { collection, doc, getDocs, orderBy, query, updateDoc } from "firebase/fi
 import { getDb } from "@/lib/firebase";
 import { useAuth } from "@/lib/auth";
 import { downloadCsv } from "@/lib/csv";
+import HomeworkPanel from "@/components/HomeworkPanel";
 import UsersPanel from "@/components/UsersPanel";
 import SchedulePanel from "@/components/SchedulePanel";
 import PaymentsPanel from "@/components/PaymentsPanel";
@@ -67,14 +68,15 @@ export default function Admin() {
     <div className="mx-auto max-w-6xl px-4 py-10">
       <h1 className="font-serif text-3xl text-sage-900">Admin Dashboard</h1>
       <div className="mt-4 flex flex-wrap gap-2">
-        {["Bookings", "Payments", "Schedule", "Users", ...Object.keys(modules)].map((n) => (
+        {["Bookings", "Payments", "Schedule", "Homework", "Users", ...Object.keys(modules)].map((n) => (
           <button key={n} onClick={() => setTab(n)} className={`rounded px-3 py-1 text-sm ${tab === n ? "bg-sage-700 text-white" : "border border-sage-300"}`}>{n}</button>
         ))}
       </div>
       {tab === "Payments" && <div className="mt-6"><PaymentsPanel /></div>}
       {tab === "Schedule" && <div className="mt-6"><SchedulePanel /></div>}
       {tab === "Users" && <div className="mt-6"><UsersPanel /></div>}
-      {tab !== "Bookings" && tab !== "Payments" && tab !== "Schedule" && tab !== "Users" && <div className="mt-6"><ContentManager key={tab} {...modules[tab]} /></div>}
+      {tab === "Homework" && user && <div className="mt-6"><HomeworkPanel userId={user.uid} isAdmin /></div>}
+      {tab !== "Bookings" && tab !== "Payments" && tab !== "Schedule" && tab !== "Users" && tab !== "Homework" && <div className="mt-6"><ContentManager key={tab} {...modules[tab]} /></div>}
       {tab === "Bookings" && <div className="mt-6 flex items-center gap-3"><h2 className="text-xl text-sage-900">Trial class bookings</h2><button onClick={() => downloadCsv("bookings.csv", rows as unknown as Record<string, unknown>[])} className="text-sm underline">Export CSV</button></div>}
       {tab === "Bookings" && err && <p role="alert" className="mt-3 text-red-700">{err} <button className="underline" onClick={load}>Retry</button></p>}
       {tab === "Bookings" && (rows.length === 0 && !err ? <p className="mt-4 text-sage-700">No booking requests yet.</p> : (

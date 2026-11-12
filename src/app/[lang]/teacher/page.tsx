@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { collection, doc, getDocs, query, Timestamp, updateDoc, where } from "firebase/firestore";
 import { getDb } from "@/lib/firebase";
 import { useAuth } from "@/lib/auth";
+import HomeworkPanel from "@/components/HomeworkPanel";
 import AttendanceMarker from "@/components/AttendanceMarker";
 
 type S = { id: string; courseId: string; title: string; startsAt: Timestamp; durationMin: number; meetingUrl: string; notes: string; status: string };
@@ -52,6 +53,8 @@ export default function Teacher() {
               {s.status === "scheduled" && <button onClick={() => complete(s.id)} className="underline">Mark completed</button>}
             </div>
           </li>))}</ul>)}
+      <h2 className="mt-10 font-serif text-2xl text-sage-900">Homework</h2>
+      <div className="mt-3"><HomeworkPanel userId={user.uid} isAdmin={false} /></div>
     </div>
   );
 }
