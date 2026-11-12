@@ -17,7 +17,7 @@ type Booking = { id: string; name: string; email: string; phone: string; student
 const modules: Record<string, { col: string; singletonId?: string; fields: Field[]; prefill?: Record<string, { en: string; bn: string }> }> = {
   Home: { col: "siteSettings", singletonId: "home", fields: [
     { key: "heroEyebrow", label: "Hero small title", bilingual: true }, { key: "heroTitle", label: "Hero headline", bilingual: true }, { key: "heroText", label: "Hero text", bilingual: true, multiline: true }] },
-  About: { col: "pages", singletonId: "about", fields: [{ key: "body", label: "About Us text", bilingual: true, multiline: true }] },
+  About: { col: "pages", singletonId: "about", prefill: { body: defaultPages.about }, fields: [{ key: "body", label: "About Us text", bilingual: true, multiline: true }] },
   Pricing: { col: "pages", singletonId: "pricing", fields: [{ key: "body", label: "Pricing text", bilingual: true, multiline: true }] },
   Terms: { col: "pages", singletonId: "terms", prefill: { body: defaultPages.terms }, fields: [{ key: "body", label: "Terms & Conditions text", bilingual: true, multiline: true }] },
   Privacy: { col: "pages", singletonId: "privacy", prefill: { body: defaultPages.privacy }, fields: [{ key: "body", label: "Privacy Policy text", bilingual: true, multiline: true }] },

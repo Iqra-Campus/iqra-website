@@ -205,7 +205,48 @@ Questions about refunds: iqracampus24.7@gmail.com`,
 রিফান্ড নিয়ে প্রশ্ন: iqracampus24.7@gmail.com`,
 };
 
-export const defaultPages: Record<string, Bi> = { terms, privacy, refund };
+const about: Bi = {
+  en: `About IQRA CAMPUS
+
+"Iqra" means "Read" — the first word of the Quran's first revelation. It is the call that inspires our name and our work.
+
+IQRA CAMPUS is an international online institute for learning the Quran and Arabic. Our motto is "Connect with Quran & Sunnah": we want every student, young or old, to build a living, lasting connection with the Book of Allah and the guidance of the Prophet (peace be upon him).
+
+What we offer
+- Live online classes with qualified teachers, from wherever you are in the world.
+- A free trial class, so you can experience our teaching before you enrol.
+- Courses for different levels and ages. See the Courses page for what is currently open.
+- Simple tracking of classes, attendance and homework in your own account, with teacher feedback.
+- A parent view, so parents can follow their child's progress.
+- Certificates on completion, which anyone can verify online.
+- A website in English and Bangla.
+
+How to begin
+Book a free trial class, tell us your goal and your level, and our team will contact you to find a suitable course and time.
+
+We ask Allah to accept this effort and to make it a means of benefit for everyone who learns with us.`,
+  bn: `ইকরা ক্যাম্পাস সম্পর্কে
+
+"ইকরা" অর্থ "পড়ো" — কুরআনের প্রথম ওহির প্রথম শব্দ। এই আহ্বান থেকেই আমাদের নাম ও আমাদের কাজের অনুপ্রেরণা।
+
+ইকরা ক্যাম্পাস কুরআন ও আরবি শেখার একটি আন্তর্জাতিক অনলাইন প্রতিষ্ঠান। আমাদের মূলমন্ত্র "কুরআন ও সুন্নাহর সাথে সংযুক্ত হোন": ছোট-বড় প্রত্যেক শিক্ষার্থী যেন আল্লাহর কিতাব ও নবী (সাল্লাল্লাহু আলাইহি ওয়া সাল্লাম)-এর হিদায়াতের সাথে জীবন্ত ও দীর্ঘস্থায়ী সম্পর্ক গড়ে তুলতে পারে, এটাই আমাদের চাওয়া।
+
+আমরা যা দিই
+- বিশ্বের যেকোনো জায়গা থেকে অংশ নেওয়ার মতো যোগ্য শিক্ষকদের সাথে সরাসরি অনলাইন ক্লাস।
+- ভর্তির আগে আমাদের পড়ানো অনুভব করার জন্য ফ্রি ট্রায়াল ক্লাস।
+- বিভিন্ন স্তর ও বয়সের জন্য কোর্স। বর্তমানে কোন কোর্স চালু আছে তা কোর্স পেজে দেখুন।
+- নিজের অ্যাকাউন্টে ক্লাস, উপস্থিতি ও হোমওয়ার্কের সহজ হিসাব এবং শিক্ষকের মন্তব্য।
+- অভিভাবকের জন্য আলাদা ভিউ, যাতে সন্তানের অগ্রগতি দেখতে পারেন।
+- কোর্স শেষে সনদ, যা যে কেউ অনলাইনে যাচাই করতে পারে।
+- ইংরেজি ও বাংলা, দুই ভাষায় ওয়েবসাইট।
+
+কীভাবে শুরু করবেন
+একটি ফ্রি ট্রায়াল ক্লাস বুক করুন, আপনার লক্ষ্য ও বর্তমান স্তর জানান। আমাদের টিম যোগাযোগ করে উপযুক্ত কোর্স ও সময় ঠিক করে দেবে।
+
+আমরা আল্লাহর কাছে দোয়া করি, তিনি যেন এই প্রচেষ্টা কবুল করেন এবং আমাদের সাথে যারা শিখছেন তাদের সবার জন্য কল্যাণের মাধ্যম করেন।`,
+};
+
+export const defaultPages: Record<string, Bi> = { about, terms, privacy, refund };
 
 export const defaultFaqs: { q: Bi; a: Bi }[] = [
   { q: { en: "How do I book a free trial class?", bn: "ফ্রি ট্রায়াল ক্লাস কীভাবে বুক করব?" },
