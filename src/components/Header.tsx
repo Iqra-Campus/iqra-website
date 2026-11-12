@@ -13,7 +13,7 @@ export default function Header({ lang, path }: { lang: Locale; path: string }) {
   const links = [{ href: `/${lang}`, label: t.nav.home }, ...slugs.map((s) => ({ href: `/${lang}/${s}`, label: t.nav[s] }))];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-gold-200 bg-white/95 backdrop-blur">
+    <header className="print:hidden sticky top-0 z-40 border-b border-gold-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2">
         <Link href={`/${lang}`} className="flex items-center gap-2">
           <Image src="/brand/logo-mark.jpg" alt={t.name} width={48} height={48} className="h-12 w-12 object-contain" priority />

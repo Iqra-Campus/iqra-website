@@ -5,7 +5,7 @@ import { siteContact as c } from "@/config/site";
 export default function Footer({ lang }: { lang: Locale }) {
   const t = ui[lang];
   return (
-    <footer className="mt-16 border-t border-gold-200 bg-cream">
+    <footer className="print:hidden mt-16 border-t border-gold-200 bg-cream">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 md:grid-cols-2">
         <div className="flex items-center gap-4">
           <Image src="/brand/logo-full.jpg" alt={t.name} width={120} height={120} className="h-28 w-28 rounded-full object-contain" />
@@ -26,6 +26,7 @@ export default function Footer({ lang }: { lang: Locale }) {
         <a className="underline" href={`/${lang}/terms`}>{lang === "bn" ? "শর্তাবলি" : "Terms"}</a>
         <a className="underline" href={`/${lang}/privacy`}>{lang === "bn" ? "গোপনীয়তা" : "Privacy"}</a>
         <a className="underline" href={`/${lang}/refund`}>{lang === "bn" ? "রিফান্ড" : "Refund"}</a>
+        <a className="underline" href={`/${lang}/certificate`}>{lang === "bn" ? "সনদ যাচাই" : "Verify certificate"}</a>
         <a className="underline" href={`/${lang}/faq`}>{lang === "bn" ? "প্রশ্নোত্তর" : "FAQ"}</a>
       </nav>
       <p className="border-t border-gold-200 py-4 text-center text-xs text-sage-700">© {new Date().getFullYear()} {t.name}. {t.rights}</p>
