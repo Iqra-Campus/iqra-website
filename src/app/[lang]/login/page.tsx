@@ -2,7 +2,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { firebaseConfigured, getAuthClient, getDb } from "@/lib/firebase";
 import { useAuth } from "@/lib/auth";
 
@@ -28,8 +28,14 @@ export default function Login() {
     e.preventDefault(); setErr(""); setBusy(true);
     try {
       const auth = getAuthClient();
+      let dest = "pay";
       if (mode === "in") {
-        await signInWithEmailAndPassword(auth, email, pw);
+        const cred = await signInWithEmailAndPassword(auth, email, pw);
+        try {
+          const snap = await getDoc(doc(getDb(), "users", cred.user.uid));
+          const role = snap.exists() ? (snap.data().role as string) : "";
+          dest = role === "superAdmin" || role === "admin" ? "admin" : role === "teacher" ? "teacher" : role === "parent" ? "parent" : "pay";
+        } catch { dest = "pay"; }
       } else {
         const cred = await createUserWithEmailAndPassword(auth, email, pw);
         await setDoc(doc(getDb(), "users", cred.user.uid), {
@@ -37,7 +43,7 @@ export default function Login() {
         });
       }
       if (mode === "up") await refreshProfile();
-      router.push(`/${lang}/pay`);
+      router.push(`/${lang}/${dest}`);
     } catch { setErr(mode === "in" ? t.err : t.serr); } finally { setBusy(false); }
   }
   const input = "mt-1 w-full rounded border border-sage-300 bg-white px-3 py-2";
