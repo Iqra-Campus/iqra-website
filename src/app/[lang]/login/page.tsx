@@ -15,7 +15,7 @@ export default function Login() {
   const { lang } = useParams<{ lang: "en" | "bn" }>();
   const t = L[lang] ?? L.en;
   const router = useRouter();
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const [mode, setMode] = useState<"in" | "up">("in");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -36,6 +36,7 @@ export default function Login() {
           role: "student", status: "active", displayName: name.trim(), email: cred.user.email, createdAt: serverTimestamp(),
         });
       }
+      if (mode === "up") await refreshProfile();
       router.push(`/${lang}/pay`);
     } catch { setErr(mode === "in" ? t.err : t.serr); } finally { setBusy(false); }
   }

@@ -1,12 +1,15 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ui, type Locale } from "@/lib/i18n";
 
 const slugs = ["about", "courses", "teachers", "pricing", "reviews", "blog", "contact"] as const;
 
-export default function Header({ lang, path }: { lang: Locale; path: string }) {
+export default function Header({ lang }: { lang: Locale; path?: string }) {
+  const pathname = usePathname() || `/${lang}`;
+  const path = pathname.replace(/^\/(en|bn)/, "");
   const t = ui[lang];
   const [open, setOpen] = useState(false);
   const switchHref = `/${t.langHref}${path}`;
