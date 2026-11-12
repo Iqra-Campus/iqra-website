@@ -47,6 +47,7 @@ export default function Login() {
       : user ? (
         <div className="mt-6 space-y-3 text-center">
           <p>{t.hi} {user.email}</p>
+          {profile?.role === "parent" && <a className="block rounded bg-sage-700 py-2 text-white" href={`/${lang}/parent`}>{lang === "bn" ? "অভিভাবক পোর্টাল" : "Parent portal"}</a>}
           {profile?.role === "teacher" && <a className="block rounded bg-sage-700 py-2 text-white" href={`/${lang}/teacher`}>{lang === "bn" ? "শিক্ষক পোর্টাল" : "Teacher portal"}</a>}
           {isAdmin && <a className="block rounded bg-sage-700 py-2 text-white" href={`/${lang}/admin`}>{t.admin}</a>}
           <a className="block rounded border border-sage-300 py-2" href={`/${lang}/pay`}>{t.pay}</a>

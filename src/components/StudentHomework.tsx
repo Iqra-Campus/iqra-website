@@ -34,7 +34,7 @@ export default function StudentHomework({ lang, userId, userName, courseIds }: {
     const text = String(new FormData(e.currentTarget).get("text") ?? "").trim();
     if (!text) return;
     try {
-      await setDoc(doc(getDb(), "submissions", `${h.id}_${userId}`), { homeworkId: h.id, courseId: h.courseId, userId, userName, text, status: "submitted", submittedAt: serverTimestamp() });
+      await setDoc(doc(getDb(), "submissions", `${h.id}_${userId}`), { homeworkId: h.id, homeworkTitle: h.title, courseId: h.courseId, userId, userName, text, status: "submitted", submittedAt: serverTimestamp() });
       await load();
     } catch { setMsg(t.fail); }
   }
