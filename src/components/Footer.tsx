@@ -22,6 +22,12 @@ export default function Footer({ lang }: { lang: Locale }) {
           <li><a className="underline" href={c.facebook} target="_blank" rel="noopener noreferrer">{t.facebook}</a></li>
         </ul>
       </div>
+      <nav className="flex flex-wrap justify-center gap-4 pb-4 text-xs text-sage-700" aria-label="Legal">
+        <a className="underline" href={`/${lang}/terms`}>{lang === "bn" ? "শর্তাবলি" : "Terms"}</a>
+        <a className="underline" href={`/${lang}/privacy`}>{lang === "bn" ? "গোপনীয়তা" : "Privacy"}</a>
+        <a className="underline" href={`/${lang}/refund`}>{lang === "bn" ? "রিফান্ড" : "Refund"}</a>
+        <a className="underline" href={`/${lang}/faq`}>{lang === "bn" ? "প্রশ্নোত্তর" : "FAQ"}</a>
+      </nav>
       <p className="border-t border-gold-200 py-4 text-center text-xs text-sage-700">© {new Date().getFullYear()} {t.name}. {t.rights}</p>
     </footer>
   );

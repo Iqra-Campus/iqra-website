@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { collection, doc, getDocs, orderBy, query, serverTimestamp, writeBatch } from "firebase/firestore";
 import { getDb } from "@/lib/firebase";
+import { downloadCsv } from "@/lib/csv";
 import { useAuth } from "@/lib/auth";
 
 type R = { id: string; userId: string; userName: string; userEmail: string; courseId: string; methodId: string; methodName: string; amount: number; currency: string; senderAccount: string; transactionId: string; status: string; rejectReason?: string };
@@ -56,6 +57,7 @@ export default function PaymentsPanel() {
         <select value={filter} onChange={(e) => setFilter(e.target.value)} className="rounded border border-sage-300 px-2 py-1">
           {["pending", "approved", "rejected", "all"].map((s) => <option key={s}>{s}</option>)}</select>
         <button onClick={load} className="underline">Refresh</button>
+        <button onClick={() => downloadCsv("payments.csv", rows as unknown as Record<string, unknown>[])} className="underline">Export CSV</button>
       </div>
       {msg && <p role="status" className="mt-2 text-sm text-sage-700">{msg}</p>}
       {shown.length === 0 ? <p className="mt-4 text-sage-700">No requests.</p> : (

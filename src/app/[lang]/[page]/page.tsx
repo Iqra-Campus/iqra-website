@@ -2,9 +2,10 @@ import { notFound } from "next/navigation";
 import { isLocale, ui } from "@/lib/i18n";
 import EmptyState from "@/components/EmptyState";
 import PublicList from "@/components/PublicList";
+import PublicPage from "@/components/PublicPage";
 import { siteContact as c } from "@/config/site";
 
-const known = ["about", "courses", "teachers", "pricing", "reviews", "contact", "faq", "trial", "login"] as const;
+const known = ["about", "courses", "teachers", "pricing", "reviews", "contact", "faq", "terms", "privacy", "refund", "trial", "login"] as const;
 type Slug = (typeof known)[number];
 
 export default async function Page({ params }: { params: Promise<{ lang: string; page: string }> }) {
@@ -12,7 +13,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string;
   if (!isLocale(lang) || !(known as readonly string[]).includes(page)) notFound();
   const t = ui[lang];
   const slug = page as Slug;
-  const title = slug === "trial" ? t.trial : slug === "login" ? t.login : slug === "faq" ? (lang === "bn" ? "প্রশ্নোত্তর" : "FAQ") : t.nav[slug];
+  const title = slug === "trial" ? t.trial : slug === "login" ? t.login : slug === "faq" ? (lang === "bn" ? "প্রশ্নোত্তর" : "FAQ") : slug === "terms" ? (lang === "bn" ? "শর্তাবলি" : "Terms & Conditions") : slug === "privacy" ? (lang === "bn" ? "গোপনীয়তা নীতি" : "Privacy Policy") : slug === "refund" ? (lang === "bn" ? "রিফান্ড নীতি" : "Refund Policy") : t.nav[slug];
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
@@ -25,8 +26,10 @@ export default async function Page({ params }: { params: Promise<{ lang: string;
           <li><a className="underline" href={c.instagram} target="_blank" rel="noopener noreferrer">{t.instagram}</a></li>
           <li><a className="underline" href={c.facebook} target="_blank" rel="noopener noreferrer">{t.facebook}</a></li>
         </ul>
-      ) : slug === "courses" || slug === "teachers" || slug === "faq" ? (
-        <PublicList col={slug === "faq" ? "faqs" : slug} lang={lang} />
+      ) : slug === "about" || slug === "pricing" || slug === "terms" || slug === "privacy" || slug === "refund" ? (
+        <PublicPage id={slug} lang={lang} />
+      ) : slug === "courses" || slug === "teachers" || slug === "faq" || slug === "reviews" ? (
+        <PublicList col={slug === "faq" ? "faqs" : slug === "reviews" ? "reviews" : slug} lang={lang} />
       ) : (
         <EmptyState lang={lang} />
       )}

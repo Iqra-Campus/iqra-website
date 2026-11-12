@@ -9,7 +9,7 @@ import type { Locale } from "@/lib/i18n";
 type Doc = Record<string, unknown> & { id: string };
 const tx = (d: Doc, k: string, lang: Locale) => { const o = d[k] as Record<string, string> | undefined; return (o?.[lang] || o?.en || "") as string; };
 
-export default function PublicList({ col, lang }: { col: "courses" | "teachers" | "faqs" | "pages"; lang: Locale }) {
+export default function PublicList({ col, lang }: { col: "courses" | "teachers" | "faqs" | "pages" | "reviews"; lang: Locale }) {
   const [docs, setDocs] = useState<Doc[] | null>(null);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
@@ -26,6 +26,15 @@ export default function PublicList({ col, lang }: { col: "courses" | "teachers" 
   if (col === "faqs") return (
     <div className="mt-8 space-y-3">{docs.map((d) => (
       <details key={d.id} className="rounded border border-gold-200 bg-white p-4"><summary className="cursor-pointer font-medium">{tx(d, "question", lang)}</summary><p className="mt-2 whitespace-pre-line text-sage-700">{tx(d, "answer", lang)}</p></details>
+    ))}</div>
+  );
+  if (col === "reviews") return (
+    <div className="mt-8 grid gap-4 sm:grid-cols-2">{docs.map((d) => (
+      <blockquote key={d.id} className="rounded border border-gold-200 bg-white p-5">
+        <p className="text-gold-600" aria-label={`${d.rating} / 5`}>{"★".repeat(Math.max(0, Math.min(5, Number(d.rating) || 0)))}</p>
+        <p className="mt-2 whitespace-pre-line text-sage-900">{tx(d, "text", lang)}</p>
+        <footer className="mt-3 text-sm text-sage-700">{String(d.name ?? "")}{d.country ? ` · ${String(d.country)}` : ""}</footer>
+      </blockquote>
     ))}</div>
   );
   if (col === "pages") return <div className="mt-8 whitespace-pre-line rounded border border-gold-200 bg-white p-6">{tx(docs[0], "body", lang)}</div>;
