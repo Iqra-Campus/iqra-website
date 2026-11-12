@@ -38,7 +38,7 @@ export default function PaymentsPanel() {
         ? { status: "approved", reviewedBy: user.uid, reviewedAt: serverTimestamp() }
         : { status: "rejected", reviewedBy: user.uid, reviewedAt: serverTimestamp(), rejectReason: reason });
       if (approve) {
-        b.set(doc(db, "enrollments", `${r.userId}_${r.courseId}`), { userId: r.userId, courseId: r.courseId, status: "active", paymentRequestId: r.id, createdAt: serverTimestamp() });
+        b.set(doc(db, "enrollments", `${r.userId}_${r.courseId}`), { userId: r.userId, userName: r.userName, courseId: r.courseId, status: "active", paymentRequestId: r.id, createdAt: serverTimestamp() });
         b.set(doc(db, "paymentLedger", r.id), { requestId: r.id, userId: r.userId, courseId: r.courseId, methodId: r.methodId, amount: r.amount, currency: r.currency, transactionId: r.transactionId, approvedBy: user.uid, createdAt: serverTimestamp() });
       }
       b.set(doc(collection(db, "auditLogs")), { actorId: user.uid, action: approve ? "payment.approve" : "payment.reject", targetId: r.id, createdAt: serverTimestamp() });
