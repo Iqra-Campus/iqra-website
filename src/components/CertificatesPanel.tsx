@@ -1,7 +1,8 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
-import { collection, doc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
+import { collection, doc, getDocs, query, serverTimestamp, updateDoc, where, writeBatch } from "firebase/firestore";
 import { getDb } from "@/lib/firebase";
+import { addNotification } from "@/lib/notify";
 import { useAuth } from "@/lib/auth";
 
 type C = { id: string; title: { en: string; bn: string } };
@@ -43,10 +44,13 @@ export default function CertificatesPanel() {
     if (!course || !user) return;
     if (!window.confirm(`Issue a certificate to ${s.name} for "${course.title.en}"?`)) return;
     try {
-      await setDoc(doc(getDb(), "certificates", newCode()), {
+      const db = getDb(); const b = writeBatch(db);
+      b.set(doc(db, "certificates", newCode()), {
         userId: s.userId, userName: s.name, courseId, courseTitleEn: course.title.en, courseTitleBn: course.title.bn,
         status: "active", issuedBy: user.uid, issuedAt: serverTimestamp(),
       });
+      addNotification(db, b, s.userId, { en: `Your certificate for "${course.title.en}" is ready.`, bn: `"${course.title.bn}" কোর্সের আপনার সনদ প্রস্তুত।` });
+      await b.commit();
       setMsg("Certificate issued."); await loadCerts();
     } catch { setMsg("Could not issue. Nothing was saved."); }
   }

@@ -5,6 +5,7 @@ import { collection, doc, getDocs, query, serverTimestamp, setDoc, where } from 
 import { firebaseConfigured, getDb } from "@/lib/firebase";
 import { useAuth } from "@/lib/auth";
 import StudentClasses from "@/components/StudentClasses";
+import StudentNotifications from "@/components/StudentNotifications";
 import StudentCertificates from "@/components/StudentCertificates";
 import StudentHomework from "@/components/StudentHomework";
 
@@ -77,6 +78,8 @@ function Inner() {
   return (
     <div className="mx-auto max-w-3xl space-y-10 px-4 py-10">
       <h1 className="text-center font-serif text-3xl text-sage-900">{t.title}</h1>
+
+      <StudentNotifications lang={lang} userId={user.uid} />
 
       <section>
         <h2 className="font-serif text-xl text-sage-900">{t.myCourses}</h2>

@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { collection, deleteDoc, doc, getDocs, orderBy, query, serverTimestamp, Timestamp, updateDoc, where, writeBatch } from "firebase/firestore";
 import { getDb } from "@/lib/firebase";
+import { notifyCourse } from "@/lib/notify";
 import { useAuth } from "@/lib/auth";
 import AttendanceMarker from "@/components/AttendanceMarker";
 
@@ -53,12 +54,19 @@ export default function SchedulePanel() {
       });
       if (teacher) b.set(doc(db, "courseTeachers", `${g("course")}_${teacher.id}`), { courseId: g("course"), teacherId: teacher.id, createdAt: serverTimestamp() });
       await b.commit();
-      form.reset(); setMsg("Class scheduled."); await load();
+      form.reset(); await load();
+      try { const n = await notifyCourse(db, g("course"), { en: `New class: ${g("title")} on ${when.toLocaleString("en-GB")}`, bn: `নতুন ক্লাস: ${g("title")} — ${when.toLocaleString("bn-BD")}` }); setMsg(`Class scheduled. ${n} student(s) notified.`); }
+      catch { setMsg("Class scheduled, but students could not be notified."); }
     } catch { setMsg("Could not save. Nothing was scheduled."); }
     setBusy(false);
   }
   async function setStatus(id: string, status: string) {
-    try { await updateDoc(doc(getDb(), "classSessions", id), { status }); await load(); } catch { setMsg("Update failed."); }
+    try {
+      await updateDoc(doc(getDb(), "classSessions", id), { status });
+      const s = rows.find((x) => x.id === id);
+      if (status === "cancelled" && s) { try { await notifyCourse(getDb(), s.courseId, { en: `Class cancelled: ${s.title}`, bn: `ক্লাস বাতিল: ${s.title}` }); } catch { setMsg("Cancelled, but students could not be notified."); } }
+      await load();
+    } catch { setMsg("Update failed."); }
   }
   async function remove(id: string) {
     if (!window.confirm("Delete this class permanently?")) return;

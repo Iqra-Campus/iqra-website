@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { addDoc, collection, doc, getDocs, query, serverTimestamp, Timestamp, updateDoc, where } from "firebase/firestore";
 import { getDb } from "@/lib/firebase";
+import { notifyCourse } from "@/lib/notify";
 
 type H = { id: string; courseId: string; title: string; description: string; dueAt: Timestamp; status: string };
 type Sub = { id: string; userId: string; userName: string; text: string; status: string; grade?: string; feedback?: string };
@@ -44,7 +45,9 @@ export default function HomeworkPanel({ userId, isAdmin }: { userId: string; isA
     setBusy(true); setMsg("");
     try {
       await addDoc(collection(getDb(), "homework"), { courseId: g("course"), title: g("title"), description: g("desc"), dueAt: Timestamp.fromDate(due), createdBy: userId, status: "active", createdAt: serverTimestamp() });
-      form.reset(); setMsg("Homework created."); await load();
+      form.reset(); await load();
+      try { const n = await notifyCourse(getDb(), g("course"), { en: `New homework: ${g("title")}`, bn: `নতুন হোমওয়ার্ক: ${g("title")}` }); setMsg(`Homework created. ${n} student(s) notified.`); }
+      catch { setMsg("Homework created, but students could not be notified."); }
     } catch { setMsg("Could not save. Nothing was created."); }
     setBusy(false);
   }

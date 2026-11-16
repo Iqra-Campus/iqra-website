@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { collection, doc, getDocs, orderBy, query, serverTimestamp, writeBatch } from "firebase/firestore";
 import { getDb } from "@/lib/firebase";
+import { addNotification } from "@/lib/notify";
 import { downloadCsv } from "@/lib/csv";
 import { useAuth } from "@/lib/auth";
 
@@ -41,6 +42,9 @@ export default function PaymentsPanel() {
         b.set(doc(db, "enrollments", `${r.userId}_${r.courseId}`), { userId: r.userId, userName: r.userName, courseId: r.courseId, status: "active", paymentRequestId: r.id, createdAt: serverTimestamp() });
         b.set(doc(db, "paymentLedger", r.id), { requestId: r.id, userId: r.userId, courseId: r.courseId, methodId: r.methodId, amount: r.amount, currency: r.currency, transactionId: r.transactionId, approvedBy: user.uid, createdAt: serverTimestamp() });
       }
+      addNotification(db, b, r.userId, approve
+        ? { en: "Your payment was approved. Your course is now open.", bn: "আপনার পেমেন্ট অনুমোদিত হয়েছে। কোর্সটি এখন চালু।" }
+        : { en: `Your payment request was rejected: ${reason}`, bn: `আপনার পেমেন্ট অনুরোধ বাতিল হয়েছে: ${reason}` });
       b.set(doc(collection(db, "auditLogs")), { actorId: user.uid, action: approve ? "payment.approve" : "payment.reject", targetId: r.id, createdAt: serverTimestamp() });
       await b.commit();
       setMsg(approve ? "Approved. Course access granted." : "Rejected.");
