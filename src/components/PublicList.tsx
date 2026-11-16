@@ -59,6 +59,7 @@ export default function PublicList({ col, lang }: { col: "courses" | "teachers" 
   return (
     <div className="mt-8 grid gap-4 sm:grid-cols-2">{docs.map((d) => (
       <article key={d.id} className="rounded border border-gold-200 bg-white p-5">
+        {col === "teachers" && typeof d.photo === "string" && d.photo && /* eslint-disable-next-line @next/next/no-img-element */ <img src={d.photo} alt={tx(d, "name", lang)} loading="lazy" className="mb-3 h-24 w-24 rounded-full object-cover" />}
         <h2 className="font-serif text-xl text-sage-900">{tx(d, col === "courses" ? "title" : "name", lang)}</h2>
         {col === "teachers" && <p className="mt-1 text-sm text-gold-600">{tx(d, "qualifications", lang)}</p>}
         <p className="mt-2 whitespace-pre-line text-sage-700">{tx(d, col === "courses" ? "description" : "bio", lang)}</p>

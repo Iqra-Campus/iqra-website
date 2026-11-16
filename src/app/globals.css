@@ -8,3 +8,9 @@ body { background: #FBF8F1; color: #2F4636; -webkit-font-smoothing: antialiased;
     radial-gradient(circle at 1px 1px, rgba(167,133,50,.18) 1px, transparent 0);
   background-size: 22px 22px;
 }
+
+/* Teacher cards: continuous right-to-left motion, pauses on hover/focus. */
+@keyframes marquee-rtl { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee-track { animation: marquee-rtl 45s linear infinite; }
+.marquee-wrap:hover .marquee-track, .marquee-wrap:focus-within .marquee-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }

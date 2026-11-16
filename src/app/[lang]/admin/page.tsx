@@ -34,7 +34,7 @@ const modules: Record<string, { col: string; singletonId?: string; fields: Field
     { key: "title", label: "Course title", bilingual: true }, { key: "description", label: "Description", bilingual: true, multiline: true },
     { key: "price", label: "Price text", bilingual: true }, { key: "order", label: "Display order", number: true }] },
   Teachers: { col: "teachers", fields: [
-    { key: "name", label: "Name", bilingual: true }, { key: "qualifications", label: "Qualifications", bilingual: true }, { key: "bio", label: "Biography", bilingual: true, multiline: true }, { key: "order", label: "Display order", number: true }] },
+    { key: "photo", label: "Photo (square works best)", image: true }, { key: "name", label: "Name", bilingual: true }, { key: "qualifications", label: "Qualifications", bilingual: true }, { key: "bio", label: "Biography", bilingual: true, multiline: true }, { key: "order", label: "Display order", number: true }] },
   "Payment Methods": { col: "paymentMethods", fields: [
     { key: "name", label: "Method name (e.g. bKash, Bank)", bilingual: true }, { key: "accountNumber", label: "Account / number" }, { key: "accountName", label: "Account holder name" },
     { key: "bankName", label: "Bank name (if bank)" }, { key: "branch", label: "Branch (optional)" }, { key: "swift", label: "SWIFT / IBAN (optional)" },

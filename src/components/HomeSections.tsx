@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { firebaseConfigured, getDb } from "@/lib/firebase";
 import type { Locale } from "@/lib/i18n";
+import HomeTeachers from "@/components/HomeTeachers";
 
 type D = Record<string, any> & { id: string }; // eslint-disable-line @typescript-eslint/no-explicit-any
 const tx = (d: D, k: string, lang: Locale) => (d[k]?.[lang] || d[k]?.en || "") as string;
@@ -89,6 +90,8 @@ export default function HomeSections({ lang }: { lang: Locale }) {
               </blockquote>))}
           </div>
         </section>)}
+
+      <HomeTeachers lang={lang} />
 
       <section className="islamic-pattern mx-auto mt-14 max-w-4xl rounded border border-gold-200 bg-cream px-6 py-10 text-center">
         <h2 className="font-serif text-3xl text-sage-900">{t.ctaTitle}</h2>

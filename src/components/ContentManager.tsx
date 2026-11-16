@@ -2,8 +2,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { addDoc, collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { getDb } from "@/lib/firebase";
+import { photoToDataUrl } from "@/lib/image";
 
-export type Field = { key: string; label: string; bilingual?: boolean; multiline?: boolean; number?: boolean };
+export type Field = { key: string; label: string; bilingual?: boolean; multiline?: boolean; number?: boolean; image?: boolean };
 type Item = { id: string; status?: string; [k: string]: unknown };
 const flat = (item: Item | null, fields: Field[]) => {
   const v: Record<string, string> = {};
@@ -67,7 +68,13 @@ export default function ContentManager({ col, fields, singletonId, prefill }: { 
         const k = f.bilingual ? `${f.key}.${l}` : f.key;
         return (
           <label key={k} className="block text-sm">{f.label}{l && ` (${l === "en" ? "English" : "বাংলা"})`}
-            {f.multiline ? <textarea rows={4} value={edit.v[k]} onChange={(e) => set(k, e.target.value)} className={inp} />
+            {f.image ? (
+              <span className="mt-1 flex items-center gap-3">
+                {edit.v[k] ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={edit.v[k]} alt="" className="h-16 w-16 rounded-full object-cover" /> : <span className="flex h-16 w-16 items-center justify-center rounded-full bg-sage-100 text-xs text-sage-700">No photo</span>}
+                <input type="file" accept="image/*" onChange={async (e) => { const file = e.target.files?.[0]; if (!file) return; try { set(k, await photoToDataUrl(file)); setMsg(""); } catch (err) { setMsg((err as Error).message); } }} className="text-xs" />
+                {edit.v[k] && <button type="button" onClick={() => set(k, "")} className="text-xs text-red-700 underline">Remove</button>}
+              </span>
+            ) : f.multiline ? <textarea rows={4} value={edit.v[k]} onChange={(e) => set(k, e.target.value)} className={inp} />
               : <input type={f.number ? "number" : "text"} value={edit.v[k]} onChange={(e) => set(k, e.target.value)} className={inp} />}
           </label>
         );
