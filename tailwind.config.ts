@@ -6,7 +6,7 @@ const config: Config = {
       colors: {
         ivory: "#FBF8F1",
         cream: "#F4EEDD",
-        sage: { 100: "#E6EDE3", 300: "#B5C7AF", 500: "#8FA98A", 700: "#566F58", 900: "#2F4636" },
+        sage: { 100: "#E9EDF8", 300: "#C3CCE6", 500: "#6F7FAE", 700: "#2A3F7A", 900: "#0A1A3F" },
         navy: { 950: "#060F2B", 900: "#0A1A3F", 800: "#12275C", 700: "#1B3677", 300: "#9FB2E0" },
         gold: { 200: "#EBDDAE", 400: "#CFAE57", 600: "#A78532" },
       },
