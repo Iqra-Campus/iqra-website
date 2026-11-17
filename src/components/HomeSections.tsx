@@ -7,6 +7,7 @@ import type { Locale } from "@/lib/i18n";
 import HomeTeachers from "@/components/HomeTeachers";
 import Carousel from "@/components/Carousel";
 import Reveal from "@/components/Reveal";
+import Icon, { type IconName } from "@/components/Icons";
 
 type D = Record<string, any> & { id: string }; // eslint-disable-line @typescript-eslint/no-explicit-any
 const tx = (d: D, k: string, lang: Locale) => (d[k]?.[lang] || d[k]?.en || "") as string;
@@ -48,6 +49,9 @@ const T = {
   },
 };
 
+const featureIcons: IconName[] = ["live", "trial", "progress", "parent", "certificate", "language"];
+const tickerIcons: IconName[] = ["live", "trial", "parent", "certificate", "language"];
+
 export default function HomeSections({ lang }: { lang: Locale }) {
   const t = T[lang];
   const [courses, setCourses] = useState<D[]>([]);
@@ -59,14 +63,14 @@ export default function HomeSections({ lang }: { lang: Locale }) {
     pub("courses").then((s) => setCourses(rows(s, 8))).catch(() => {});
     pub("reviews").then((s) => setReviews(rows(s, 3))).catch(() => {});
   }, []);
-  const tick = [...t.ticker, ...t.ticker, ...t.ticker];
+  const tick = [...t.ticker, ...t.ticker].map((label, i) => ({ label, icon: tickerIcons[i % tickerIcons.length] }));
 
   return (
     <>
       {/* Ticker */}
       <div className="overflow-hidden border-y border-gold-200 bg-white py-4" aria-hidden="true">
         <div className="ticker-track flex w-max">
-          {[0, 1].map((k) => <div key={k} className="flex">{tick.map((x, i) => <span key={`${k}-${i}`} className="flex items-center whitespace-nowrap px-5 text-lg font-semibold text-navy-900"><span className="mr-5 text-navy-700">✦</span>{x}</span>)}</div>)}
+          {[0, 1].map((k) => <div key={k} className="flex">{tick.map((x, i) => <span key={`${k}-${i}`} className="flex items-center whitespace-nowrap px-6 text-lg font-semibold text-navy-900"><span className="mr-3 flex h-9 w-9 items-center justify-center rounded-full bg-navy-900 text-gold-400"><Icon name={x.icon} className="h-5 w-5" /></span>{x.label}</span>)}</div>)}
         </div>
       </div>
 
@@ -83,7 +87,7 @@ export default function HomeSections({ lang }: { lang: Locale }) {
             {t.features.map(([h, p], i) => (
               <article key={h} className="card-glow relative w-[82%] max-w-sm rounded-3xl p-7">
                 <span className="num absolute right-6 top-4 font-serif text-6xl font-bold">{String(i + 1).padStart(2, "0")}</span>
-                <span className="icon-float mt-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-gold-400 text-xl text-navy-900" aria-hidden="true">✦</span>
+                <span className="icon-float mt-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-200 to-gold-400 text-navy-900 shadow-lg shadow-black/30"><Icon name={featureIcons[i]} className="h-7 w-7" /></span>
                 <h3 className="mt-6 font-serif text-2xl text-white">{h}</h3>
                 <p className="mt-2 text-navy-200">{p}</p>
               </article>))}
@@ -94,7 +98,7 @@ export default function HomeSections({ lang }: { lang: Locale }) {
             <Reveal key={h} delay={i * 90}>
               <article className="card-glow relative h-full rounded-3xl p-8">
                 <span className="num absolute right-7 top-5 font-serif text-6xl font-bold">{String(i + 1).padStart(2, "0")}</span>
-                <span className="icon-float flex h-12 w-12 items-center justify-center rounded-2xl bg-gold-400 text-xl text-navy-900" aria-hidden="true">✦</span>
+                <span className="icon-float flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-200 to-gold-400 text-navy-900 shadow-lg shadow-black/30"><Icon name={featureIcons[i]} className="h-7 w-7" /></span>
                 <h3 className="mt-6 font-serif text-2xl text-white">{h}</h3>
                 <p className="mt-2 text-navy-200">{p}</p>
               </article>
