@@ -24,7 +24,7 @@ function Avatar() {
 function Item({ c, lang }: { c: Card; lang: Locale }) {
   const t = T[lang];
   return (
-    <article className="mx-2 w-72 shrink-0 rounded-3xl bg-white p-3 shadow-md ring-1 ring-gold-200">
+    <article className="mx-2 w-72 shrink-0 rounded-3xl bg-white p-3 shadow-xl shadow-navy-900/15 ring-1 ring-gold-200">
       <div className="relative aspect-square overflow-hidden rounded-2xl">
         {c.photo ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={c.photo} alt={c.name} loading="lazy" className="h-full w-full object-cover" /> : <Avatar />}
         {c.qual && <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-navy-900">{c.qual}</span>}

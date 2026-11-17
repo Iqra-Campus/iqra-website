@@ -23,3 +23,23 @@ body { background: #FBF8F1; color: #0A1A3F; -webkit-font-smoothing: antialiased;
 .ticker-track { animation: ticker-rtl 30s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
 body { padding-bottom: env(safe-area-inset-bottom); }
+
+/* Dark section + glowing cards */
+.dark-glow {
+  background:
+    radial-gradient(60% 50% at 15% 0%, rgba(207,174,87,.16), transparent 70%),
+    radial-gradient(55% 60% at 90% 100%, rgba(42,63,122,.55), transparent 70%),
+    linear-gradient(180deg, #0A1A3F 0%, #060F2B 100%);
+}
+.card-glow {
+  background: linear-gradient(145deg, #25418A 0%, #172F6B 45%, #0E2150 100%);
+  border: 1px solid rgba(207,174,87,.45);
+  box-shadow: 0 14px 34px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.04) inset, 0 1px 0 rgba(255,255,255,.18) inset;
+  transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+}
+.card-glow:hover { transform: translateY(-8px); border-color: rgba(207,174,87,.9); box-shadow: 0 22px 44px rgba(0,0,0,.55), 0 0 28px rgba(207,174,87,.28); }
+.card-glow .num { background: linear-gradient(180deg, #E9CF82, #A78532); -webkit-background-clip: text; background-clip: text; color: transparent; }
+@keyframes float-soft { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.icon-float { animation: float-soft 4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .icon-float { animation: none; } .card-glow { transition: none; } }
+@media (min-width: 1024px) { .snap-row { max-width: 74rem; margin-inline: auto; padding-inline: 1rem; } }

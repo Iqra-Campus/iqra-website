@@ -6,6 +6,7 @@ import { firebaseConfigured, getDb } from "@/lib/firebase";
 import type { Locale } from "@/lib/i18n";
 import HomeTeachers from "@/components/HomeTeachers";
 import Carousel from "@/components/Carousel";
+import Reveal from "@/components/Reveal";
 
 type D = Record<string, any> & { id: string }; // eslint-disable-line @typescript-eslint/no-explicit-any
 const tx = (d: D, k: string, lang: Locale) => (d[k]?.[lang] || d[k]?.en || "") as string;
@@ -69,23 +70,35 @@ export default function HomeSections({ lang }: { lang: Locale }) {
         </div>
       </div>
 
-      {/* Why: dark swipe cards */}
-      <section className="islamic-pattern mt-14 bg-navy-950 py-14 text-white">
-        <div className="mx-auto max-w-3xl px-5">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-navy-300">— {t.whyEyebrow}</p>
-          <h2 className="mt-3 font-serif text-3xl md:text-4xl">{t.whyTitle}</h2>
-          <div className="mt-4 h-1 w-24 rounded bg-gold-400" />
-          <p className="mt-4 text-navy-300">{t.whySub}</p>
+      {/* Why: dark glowing cards (swipe on phones, grid on large screens) */}
+      <section className="dark-glow islamic-pattern mt-14 py-16 text-white">
+        <div className="mx-auto max-w-3xl px-5 text-center lg:max-w-6xl lg:px-6 lg:text-left">
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-gold-400">— {t.whyEyebrow}</p>
+          <h2 className="mt-3 font-serif text-3xl drop-shadow md:text-4xl">{t.whyTitle}</h2>
+          <div className="mx-auto mt-4 h-1 w-24 rounded bg-gold-400 lg:mx-0" />
+          <p className="mt-4 text-navy-200">{t.whySub}</p>
         </div>
-        <div className="mt-8">
+        <div className="mt-10 lg:hidden">
           <Carousel dark label={t.whyTitle}>
             {t.features.map(([h, p], i) => (
-              <article key={h} className="relative w-[82%] max-w-sm rounded-3xl border border-white/10 bg-navy-900 p-7">
-                <span className="absolute right-6 top-5 font-serif text-5xl text-white/10">{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="mt-14 font-serif text-2xl">{h}</h3>
-                <p className="mt-2 text-navy-300">{p}</p>
+              <article key={h} className="card-glow relative w-[82%] max-w-sm rounded-3xl p-7">
+                <span className="num absolute right-6 top-4 font-serif text-6xl font-bold">{String(i + 1).padStart(2, "0")}</span>
+                <span className="icon-float mt-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-gold-400 text-xl text-navy-900" aria-hidden="true">✦</span>
+                <h3 className="mt-6 font-serif text-2xl text-white">{h}</h3>
+                <p className="mt-2 text-navy-200">{p}</p>
               </article>))}
           </Carousel>
+        </div>
+        <div className="mx-auto mt-12 hidden max-w-6xl grid-cols-3 gap-6 px-6 lg:grid">
+          {t.features.map(([h, p], i) => (
+            <Reveal key={h} delay={i * 90}>
+              <article className="card-glow relative h-full rounded-3xl p-8">
+                <span className="num absolute right-7 top-5 font-serif text-6xl font-bold">{String(i + 1).padStart(2, "0")}</span>
+                <span className="icon-float flex h-12 w-12 items-center justify-center rounded-2xl bg-gold-400 text-xl text-navy-900" aria-hidden="true">✦</span>
+                <h3 className="mt-6 font-serif text-2xl text-white">{h}</h3>
+                <p className="mt-2 text-navy-200">{p}</p>
+              </article>
+            </Reveal>))}
         </div>
       </section>
 
@@ -100,7 +113,7 @@ export default function HomeSections({ lang }: { lang: Locale }) {
           <div className="mt-8">
             <Carousel label={t.cTitle}>
               {courses.map((c) => (
-                <article key={c.id} className="w-[85%] max-w-sm overflow-hidden rounded-3xl bg-white shadow-md ring-1 ring-gold-200">
+                <article key={c.id} className="w-[85%] max-w-sm overflow-hidden rounded-3xl bg-white shadow-xl shadow-navy-900/15 ring-1 ring-gold-200 transition-transform duration-300 hover:-translate-y-1.5">
                   <div className="islamic-pattern relative flex h-48 items-end bg-gradient-to-br from-navy-900 to-navy-700 p-5">
                     {typeof c.photo === "string" && c.photo && /* eslint-disable-next-line @next/next/no-img-element */ <img src={c.photo} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />}
                     <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 to-transparent" />
