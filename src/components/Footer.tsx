@@ -8,7 +8,7 @@ export default function Footer({ lang }: { lang: Locale }) {
     <footer className="print:hidden mt-16 border-t border-gold-200 bg-cream">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 md:grid-cols-2">
         <div className="flex items-center gap-4">
-          <Image src="/brand/logo-full.jpg" alt={t.name} width={120} height={120} className="h-28 w-auto object-contain" />
+          <Image src="/brand/logo-full.png" alt={t.name} width={120} height={120} className="h-28 w-auto object-contain" />
           <div>
             <p className="font-serif text-xl font-semibold text-sage-900">{t.name}</p>
             <p className="text-sm text-sage-700">{t.tagline}</p>

@@ -17,7 +17,7 @@ export default function Header({ lang }: { lang: Locale; path?: string }) {
     <header className="print:hidden sticky top-0 z-40 border-b border-gold-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2">
         <Link href={`/${lang}`} className="flex items-center gap-2">
-          <Image src="/brand/logo-mark.jpg" alt={t.name} width={48} height={48} className="h-12 w-12 object-contain" priority />
+          <Image src="/brand/logo-mark.png" alt={t.name} width={48} height={48} className="h-12 w-12 object-contain" priority />
           <span className="font-serif text-base font-semibold leading-tight tracking-wide text-navy-900 sm:text-lg">{t.name}</span>
         </Link>
 

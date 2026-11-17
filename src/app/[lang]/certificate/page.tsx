@@ -49,7 +49,7 @@ function Inner() {
         <>
           <p className="mt-6 text-center font-medium text-sage-700 print:hidden">✔ {t.valid}</p>
           <div className="mt-4 rounded border-4 border-double border-gold-400 bg-white p-8 text-center">
-            <Image src="/brand/logo-mark.jpg" alt="IQRA CAMPUS" width={90} height={90} className="mx-auto h-24 w-24 object-contain" />
+            <Image src="/brand/logo-mark.png" alt="IQRA CAMPUS" width={90} height={90} className="mx-auto h-24 w-24 object-contain" />
             <p className="mt-2 font-serif text-lg tracking-widest text-sage-900">IQRA CAMPUS</p>
             <h2 className="mt-6 font-serif text-3xl text-gold-600">{t.cert}</h2>
             <p className="mt-6 text-sage-700">{t.certify}</p>
