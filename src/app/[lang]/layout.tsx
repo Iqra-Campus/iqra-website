@@ -4,6 +4,7 @@ import "../globals.css";
 import { isLocale, locales, ui } from "@/lib/i18n";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BottomNav from "@/components/BottomNav";
 import { AuthProvider } from "@/lib/auth";
 
 export function generateStaticParams() { return locales.map((lang) => ({ lang })); }
@@ -21,8 +22,9 @@ export default async function LangLayout({ children, params }: { children: React
     <html lang={lang} dir="ltr">
       <body className="font-sans">
         <Header lang={lang} path="" />
-        <AuthProvider><main>{children}</main></AuthProvider>
+        <AuthProvider><main className="pb-24 lg:pb-0">{children}</main></AuthProvider>
         <Footer lang={lang} />
+        <BottomNav lang={lang} />
       </body>
     </html>
   );

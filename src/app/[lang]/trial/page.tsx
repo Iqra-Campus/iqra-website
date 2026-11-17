@@ -14,9 +14,11 @@ export default function Trial() {
   const { lang } = useParams<{ lang: "en" | "bn" }>();
   const t = L[lang] ?? L.en;
   const [courses, setCourses] = useState<Course[]>([]);
+  const [pre, setPre] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "ok" | "fail">("idle");
   const tz = typeof Intl !== "undefined" ? Intl.DateTimeFormat().resolvedOptions().timeZone : "UTC";
 
+  useEffect(() => { setPre(new URLSearchParams(window.location.search).get("course") ?? ""); }, []);
   useEffect(() => {
     if (!firebaseConfigured) return;
     getDocs(query(collection(getDb(), "courses"), where("status", "==", "published")))
@@ -51,7 +53,7 @@ export default function Trial() {
         <label className="text-sm">{t.age}<input name="age" type="number" required min={3} max={100} className={input} /></label>
         <label className="text-sm">{t.country}<input name="country" required minLength={2} maxLength={80} className={input} /></label>
         <label className="text-sm sm:col-span-2">{t.course}
-          <select name="course" className={input}><option value="general">{t.general}</option>{courses.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}</select></label>
+          <select name="course" key={pre + courses.length} defaultValue={pre || "general"} className={input}><option value="general">{t.general}</option>{courses.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}</select></label>
         <label className="text-sm">{t.date}<input name="date" type="date" required className={input} /></label>
         <label className="text-sm">{t.time}<input name="time" type="time" required className={input} /></label>
         <label className="text-sm sm:col-span-2">{t.tz}<input name="tz" required defaultValue={tz} className={input} /></label>

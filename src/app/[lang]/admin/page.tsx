@@ -31,7 +31,7 @@ const modules: Record<string, { col: string; singletonId?: string; fields: Field
   Announcements: { col: "announcements", fields: [
     { key: "title", label: "Headline", bilingual: true }, { key: "text", label: "Details", bilingual: true, multiline: true }] },
   Courses: { col: "courses", fields: [
-    { key: "title", label: "Course title", bilingual: true }, { key: "description", label: "Description", bilingual: true, multiline: true },
+    { key: "photo", label: "Cover photo (optional)", image: true }, { key: "title", label: "Course title", bilingual: true }, { key: "tag", label: "Tag (e.g. Kids & Adults)", bilingual: true }, { key: "description", label: "Description", bilingual: true, multiline: true },
     { key: "price", label: "Price text", bilingual: true }, { key: "order", label: "Display order", number: true }] },
   Teachers: { col: "teachers", fields: [
     { key: "photo", label: "Photo (square works best)", image: true }, { key: "name", label: "Name", bilingual: true }, { key: "qualifications", label: "Qualifications", bilingual: true }, { key: "bio", label: "Biography", bilingual: true, multiline: true }, { key: "order", label: "Display order", number: true }] },
