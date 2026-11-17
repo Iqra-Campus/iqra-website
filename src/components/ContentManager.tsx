@@ -1,26 +1,34 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
-import { addDoc, collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { getDb } from "@/lib/firebase";
 import { photoToDataUrl } from "@/lib/image";
 
-export type Field = { key: string; label: string; bilingual?: boolean; multiline?: boolean; number?: boolean; image?: boolean };
+export type Field = { key: string; label: string; bilingual?: boolean; multiline?: boolean; number?: boolean; image?: boolean; picks?: "teachers"; help?: string };
 type Item = { id: string; status?: string; [k: string]: unknown };
+export type Seed = { id: string; data: Record<string, unknown> }[];
+
 const flat = (item: Item | null, fields: Field[]) => {
   const v: Record<string, string> = {};
   for (const f of fields) {
     const raw = item?.[f.key] as unknown;
     if (f.bilingual) { const o = (raw ?? {}) as Record<string, string>; v[`${f.key}.en`] = o.en ?? ""; v[`${f.key}.bn`] = o.bn ?? ""; }
+    else if (Array.isArray(raw)) v[f.key] = raw.join(",");
     else v[f.key] = raw === undefined || raw === null ? "" : String(raw);
   }
   return v;
 };
+const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
 
-export default function ContentManager({ col, fields, singletonId, prefill }: { col: string; fields: Field[]; singletonId?: string; prefill?: Record<string, { en: string; bn: string }> }) {
+export default function ContentManager({ col, fields, singletonId, prefill, idField, seed }: {
+  col: string; fields: Field[]; singletonId?: string; prefill?: Record<string, { en: string; bn: string }>; idField?: string; seed?: Seed;
+}) {
   const [items, setItems] = useState<Item[]>([]);
+  const [teachers, setTeachers] = useState<{ id: string; name: string }[]>([]);
   const [edit, setEdit] = useState<{ id: string | null; v: Record<string, string>; status: string } | null>(null);
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
+  const needsTeachers = fields.some((f) => f.picks === "teachers");
 
   const load = useCallback(async () => {
     try {
@@ -30,7 +38,10 @@ export default function ContentManager({ col, fields, singletonId, prefill }: { 
     } catch { setMsg("Could not load. Please retry."); }
   }, [col, singletonId]);
   useEffect(() => { load(); }, [load]);
-  useEffect(() => { if (singletonId && items.length >= 0) setEdit((e) => e ?? null); }, [singletonId, items]);
+  useEffect(() => {
+    if (!needsTeachers) return;
+    getDocs(collection(getDb(), "teachers")).then((s) => setTeachers(s.docs.map((d) => ({ id: d.id, name: d.data().name?.en || d.data().name?.bn || d.id })))).catch(() => {});
+  }, [needsTeachers]);
 
   const open = (item: Item | null) => {
     const v = flat(item, fields);
@@ -44,12 +55,19 @@ export default function ContentManager({ col, fields, singletonId, prefill }: { 
     const data: Record<string, unknown> = { status: edit.status, updatedAt: serverTimestamp() };
     for (const f of fields) {
       if (f.bilingual) data[f.key] = { en: edit.v[`${f.key}.en`].trim(), bn: edit.v[`${f.key}.bn`].trim() };
+      else if (f.picks) data[f.key] = edit.v[f.key] ? edit.v[f.key].split(",").filter(Boolean) : [];
       else if (f.number) data[f.key] = edit.v[f.key] === "" ? 0 : Number(edit.v[f.key]);
       else data[f.key] = edit.v[f.key].trim();
     }
     try {
       if (edit.id) await setDoc(doc(getDb(), col, edit.id), data, { merge: true });
-      else await addDoc(collection(getDb(), col), { ...data, createdAt: serverTimestamp() });
+      else if (idField) {
+        const id = slugify(edit.v[idField] ?? "");
+        if (!id) { setMsg("Enter a short web address name (letters, numbers and hyphens), e.g. quran-reading."); setBusy(false); return; }
+        if ((await getDoc(doc(getDb(), col, id))).exists()) { setMsg(`"${id}" is already used. Choose another web address name.`); setBusy(false); return; }
+        data[idField] = id;
+        await setDoc(doc(getDb(), col, id), { ...data, createdAt: serverTimestamp() });
+      } else await addDoc(collection(getDb(), col), { ...data, createdAt: serverTimestamp() });
       setMsg("Saved."); setEdit(null); await load();
     } catch { setMsg("Save failed. Nothing was saved. Please retry."); }
     setBusy(false);
@@ -57,6 +75,20 @@ export default function ContentManager({ col, fields, singletonId, prefill }: { 
   async function remove(id: string) {
     if (!window.confirm("Delete permanently?")) return;
     try { await deleteDoc(doc(getDb(), col, id)); await load(); } catch { setMsg("Delete failed."); }
+  }
+  async function addSeed() {
+    if (!seed || !window.confirm(`Add ${seed.length} starter items? Existing items with the same address are kept as they are.`)) return;
+    setBusy(true); setMsg("");
+    try {
+      let added = 0;
+      for (const s of seed) {
+        const ref = doc(getDb(), col, s.id);
+        if ((await getDoc(ref)).exists()) continue;
+        await setDoc(ref, { ...s.data, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }); added++;
+      }
+      setMsg(`${added} added. Open each one to add the fee, class time, teachers and photo.`); await load();
+    } catch { setMsg("Could not add. Please retry."); }
+    setBusy(false);
   }
 
   const inp = "mt-1 w-full rounded border border-sage-300 bg-white px-3 py-2 text-sm";
@@ -68,14 +100,23 @@ export default function ContentManager({ col, fields, singletonId, prefill }: { 
         const k = f.bilingual ? `${f.key}.${l}` : f.key;
         return (
           <label key={k} className="block text-sm">{f.label}{l && ` (${l === "en" ? "English" : "বাংলা"})`}
-            {f.image ? (
+            {f.help && <span className="block text-xs text-sage-500">{f.help}</span>}
+            {f.picks ? (
+              <span className="mt-1 flex flex-wrap gap-3">
+                {teachers.length === 0 && <span className="text-xs text-sage-500">No teachers added yet (Teachers tab).</span>}
+                {teachers.map((t) => {
+                  const ids = (edit.v[k] ?? "").split(",").filter(Boolean);
+                  return <label key={t.id} className="flex items-center gap-1"><input type="checkbox" checked={ids.includes(t.id)} onChange={(e) => set(k, (e.target.checked ? [...ids, t.id] : ids.filter((x) => x !== t.id)).join(","))} />{t.name}</label>;
+                })}
+              </span>
+            ) : f.image ? (
               <span className="mt-1 flex items-center gap-3">
                 {edit.v[k] ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={edit.v[k]} alt="" className="h-16 w-16 rounded-full object-cover" /> : <span className="flex h-16 w-16 items-center justify-center rounded-full bg-sage-100 text-xs text-sage-700">No photo</span>}
                 <input type="file" accept="image/*" onChange={async (e) => { const file = e.target.files?.[0]; if (!file) return; try { set(k, await photoToDataUrl(file)); setMsg(""); } catch (err) { setMsg((err as Error).message); } }} className="text-xs" />
                 {edit.v[k] && <button type="button" onClick={() => set(k, "")} className="text-xs text-red-700 underline">Remove</button>}
               </span>
-            ) : f.multiline ? <textarea rows={4} value={edit.v[k]} onChange={(e) => set(k, e.target.value)} className={inp} />
-              : <input type={f.number ? "number" : "text"} value={edit.v[k]} onChange={(e) => set(k, e.target.value)} className={inp} />}
+            ) : f.multiline ? <textarea rows={5} value={edit.v[k]} onChange={(e) => set(k, e.target.value)} className={inp} />
+              : <input type={f.number ? "number" : "text"} value={edit.v[k]} disabled={!!idField && f.key === idField && !!edit.id} onChange={(e) => set(k, e.target.value)} className={inp} />}
           </label>
         );
       }))}
@@ -91,15 +132,15 @@ export default function ContentManager({ col, fields, singletonId, prefill }: { 
     </div>
   );
 
-  const nameOf = (i: Item) => { const v = flat(i, fields)[`${fields[0].key}.en`] ?? flat(i, fields)[fields[0].key]; return v || i.id; };
+  const nameOf = (i: Item) => { const f = flat(i, fields); return f[`${fields.find((x) => x.bilingual)?.key ?? fields[0].key}.en`] || f[fields[0].key] || i.id; };
   return (
     <div>
       {msg && <p className="mb-2 text-sm text-sage-700">{msg}</p>}
-      {singletonId ? (
-        <button onClick={() => open(items[0] ?? null)} className="rounded bg-sage-700 px-4 py-2 text-white">Edit</button>
-      ) : (
-        <button onClick={() => open(null)} className="rounded bg-sage-700 px-4 py-2 text-white">+ Add new</button>
-      )}
+      <div className="flex flex-wrap gap-2">
+        {singletonId ? <button onClick={() => open(items[0] ?? null)} className="rounded bg-sage-700 px-4 py-2 text-white">Edit</button>
+          : <button onClick={() => open(null)} className="rounded bg-sage-700 px-4 py-2 text-white">+ Add new</button>}
+        {seed && !singletonId && <button disabled={busy} onClick={addSeed} className="rounded border border-sage-300 px-4 py-2 disabled:opacity-60">Add the starter courses</button>}
+      </div>
       {!singletonId && items.length === 0 && <p className="mt-4 text-sage-700">Nothing added yet.</p>}
       <ul className="mt-3 space-y-2">
         {!singletonId && items.map((i) => (
@@ -109,8 +150,7 @@ export default function ContentManager({ col, fields, singletonId, prefill }: { 
               <button onClick={() => open(i)} className="underline">Edit</button>
               <button onClick={() => remove(i.id)} className="text-red-700 underline">Delete</button>
             </span>
-          </li>
-        ))}
+          </li>))}
       </ul>
     </div>
   );

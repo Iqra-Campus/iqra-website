@@ -7,6 +7,7 @@ import type { Locale } from "@/lib/i18n";
 import HomeTeachers from "@/components/HomeTeachers";
 import Carousel from "@/components/Carousel";
 import Reveal from "@/components/Reveal";
+import { courseDocs } from "@/content/courses";
 import Icon, { type IconName } from "@/components/Icons";
 
 type D = Record<string, any> & { id: string }; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -63,6 +64,7 @@ export default function HomeSections({ lang }: { lang: Locale }) {
     pub("courses").then((s) => setCourses(rows(s, 8))).catch(() => {});
     pub("reviews").then((s) => setReviews(rows(s, 3))).catch(() => {});
   }, []);
+  const shownCourses: D[] = courses.length > 0 ? courses : (courseDocs() as unknown as D[]);
   const tick = [...t.ticker, ...t.ticker].map((label, i) => ({ label, icon: tickerIcons[i % tickerIcons.length] }));
 
   return (
@@ -107,7 +109,7 @@ export default function HomeSections({ lang }: { lang: Locale }) {
       </section>
 
       {/* Courses */}
-      {courses.length > 0 && (
+      {(
         <section className="mt-16">
           <div className="mx-auto max-w-3xl px-5 text-center">
             <p className="text-xs font-bold uppercase tracking-[0.25em] text-navy-700">— {t.cEyebrow} —</p>
@@ -116,9 +118,9 @@ export default function HomeSections({ lang }: { lang: Locale }) {
           </div>
           <div className="mt-8">
             <Carousel label={t.cTitle}>
-              {courses.map((c) => (
+              {shownCourses.map((c) => (
                 <article key={c.id} className="w-[85%] max-w-sm overflow-hidden rounded-3xl bg-white shadow-xl shadow-navy-900/15 ring-1 ring-gold-200 transition-transform duration-300 hover:-translate-y-1.5">
-                  <div className="islamic-pattern relative flex h-48 items-end bg-gradient-to-br from-navy-900 to-navy-700 p-5">
+                  <div className="navy-hero relative flex h-48 items-end p-5">
                     {typeof c.photo === "string" && c.photo && /* eslint-disable-next-line @next/next/no-img-element */ <img src={c.photo} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />}
                     <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 to-transparent" />
                     {tx(c, "tag", lang) && <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-navy-900">{tx(c, "tag", lang)}</span>}
@@ -128,7 +130,7 @@ export default function HomeSections({ lang }: { lang: Locale }) {
                     <p className="line-clamp-3 whitespace-pre-line text-sm text-sage-700">{tx(c, "description", lang)}</p>
                     {tx(c, "price", lang) && <p className="mt-3 font-semibold text-navy-900">{tx(c, "price", lang)}</p>}
                     <div className="mt-4 flex items-center justify-between border-t border-gold-200 pt-4">
-                      <Link href={`/${lang}/courses`} className="text-sm font-bold text-navy-900">{t.details}</Link>
+                      <Link href={`/${lang}/courses/${c.id}`} className="text-sm font-bold text-navy-900">{t.details}</Link>
                       <Link href={`/${lang}/trial?course=${c.id}`} className="rounded-xl bg-navy-900 px-5 py-2.5 text-sm font-semibold text-white">{t.book}</Link>
                     </div>
                   </div>
@@ -164,7 +166,7 @@ export default function HomeSections({ lang }: { lang: Locale }) {
           </div>
         </section>)}
 
-      <section className="islamic-pattern mx-4 mt-16 rounded-3xl bg-navy-900 px-6 py-12 text-center text-white md:mx-auto md:max-w-4xl">
+      <section className="navy-hero mx-4 mt-16 rounded-3xl px-6 py-12 text-center text-white md:mx-auto md:max-w-4xl">
         <h2 className="font-serif text-3xl">{t.ctaTitle}</h2>
         <p className="mt-3 text-navy-300">{t.ctaText}</p>
         <Link href={`/${lang}/trial`} className="mt-6 inline-block rounded-full bg-gold-400 px-7 py-3 font-semibold text-navy-900 hover:bg-gold-200">{t.cta}</Link>

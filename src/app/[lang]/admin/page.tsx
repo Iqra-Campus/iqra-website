@@ -11,10 +11,11 @@ import UsersPanel from "@/components/UsersPanel";
 import { defaultPages } from "@/content/defaults";
 import SchedulePanel from "@/components/SchedulePanel";
 import PaymentsPanel from "@/components/PaymentsPanel";
-import ContentManager, { type Field } from "@/components/ContentManager";
+import ContentManager, { type Field, type Seed } from "@/components/ContentManager";
+import { starterCourses } from "@/content/courses";
 
 type Booking = { id: string; name: string; email: string; phone: string; studentAge: number; country: string; courseId: string; preferredDate: string; preferredTime: string; timeZone: string; message?: string; status: string };
-const modules: Record<string, { col: string; singletonId?: string; fields: Field[]; prefill?: Record<string, { en: string; bn: string }> }> = {
+const modules: Record<string, { col: string; singletonId?: string; fields: Field[]; prefill?: Record<string, { en: string; bn: string }>; idField?: string; seed?: Seed }> = {
   Home: { col: "siteSettings", singletonId: "home", fields: [
     { key: "heroEyebrow", label: "Hero small title", bilingual: true }, { key: "heroTitle", label: "Hero headline", bilingual: true }, { key: "heroText", label: "Hero text", bilingual: true, multiline: true }] },
   About: { col: "pages", singletonId: "about", prefill: { body: defaultPages.about }, fields: [{ key: "body", label: "About Us text", bilingual: true, multiline: true }] },
@@ -30,9 +31,22 @@ const modules: Record<string, { col: string; singletonId?: string; fields: Field
     { key: "body", label: "Article text", bilingual: true, multiline: true }, { key: "author", label: "Author name" }] },
   Announcements: { col: "announcements", fields: [
     { key: "title", label: "Headline", bilingual: true }, { key: "text", label: "Details", bilingual: true, multiline: true }] },
-  Courses: { col: "courses", fields: [
-    { key: "photo", label: "Cover photo (optional)", image: true }, { key: "title", label: "Course title", bilingual: true }, { key: "tag", label: "Tag (e.g. Kids & Adults)", bilingual: true }, { key: "description", label: "Description", bilingual: true, multiline: true },
-    { key: "price", label: "Price text", bilingual: true }, { key: "order", label: "Display order", number: true }] },
+  Courses: { col: "courses", idField: "slug", seed: starterCourses.map((c) => ({ id: c.id, data: c.data as unknown as Record<string, unknown> })), fields: [
+    { key: "slug", label: "Web address name (letters, numbers, hyphens; cannot be changed later)", help: "Example: quran-reading  →  /en/courses/quran-reading" },
+    { key: "photo", label: "Course photo (optional)", image: true },
+    { key: "title", label: "Course name", bilingual: true },
+    { key: "tag", label: "Short tag (e.g. Ages 4–12)", bilingual: true },
+    { key: "description", label: "Short description (shown on cards)", bilingual: true, multiline: true },
+    { key: "audience", label: "Who is this course for?", bilingual: true, multiline: true },
+    { key: "topics", label: "What will be taught", bilingual: true, multiline: true, help: "One item per line." },
+    { key: "outcomes", label: "Objectives and learning outcomes", bilingual: true, multiline: true, help: "One item per line." },
+    { key: "format", label: "How classes are held", bilingual: true, multiline: true },
+    { key: "groupType", label: "One student or a group?", bilingual: true },
+    { key: "schedule", label: "Class time and duration", bilingual: true, multiline: true },
+    { key: "price", label: "Course fee", bilingual: true },
+    { key: "teacherIds", label: "Teachers of this course", picks: "teachers" },
+    { key: "faqText", label: "Questions and answers for this course", bilingual: true, multiline: true, help: "For each question: the question on the first line, the answer on the next lines. Leave a blank line between questions." },
+    { key: "order", label: "Display order (1 shows first)", number: true }] },
   Teachers: { col: "teachers", fields: [
     { key: "photo", label: "Photo (square works best)", image: true }, { key: "name", label: "Name", bilingual: true }, { key: "qualifications", label: "Qualifications", bilingual: true }, { key: "bio", label: "Biography", bilingual: true, multiline: true }, { key: "order", label: "Display order", number: true }] },
   "Payment Methods": { col: "paymentMethods", fields: [

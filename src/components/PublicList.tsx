@@ -6,6 +6,7 @@ import { firebaseConfigured, getDb } from "@/lib/firebase";
 import EmptyState from "@/components/EmptyState";
 import type { Locale } from "@/lib/i18n";
 import { defaultFaqs } from "@/content/defaults";
+import { courseDocs } from "@/content/courses";
 
 type Doc = Record<string, unknown> & { id: string };
 const tx = (d: Doc, k: string, lang: Locale) => { const o = d[k] as Record<string, string> | undefined; return (o?.[lang] || o?.en || "") as string; };
@@ -27,7 +28,8 @@ export default function PublicList({ col, lang }: { col: "courses" | "teachers" 
       <details key={i} className="rounded border border-gold-200 bg-white p-4"><summary className="cursor-pointer font-medium">{f.q[lang]}</summary><p className="mt-2 whitespace-pre-line text-sage-700">{f.a[lang]}</p></details>
     ))}</div>
   );
-  if (docs.length === 0) return <EmptyState lang={lang} />;
+  if (docs.length === 0 && col !== "courses") return <EmptyState lang={lang} />;
+  const list: Doc[] = docs.length === 0 ? (courseDocs() as unknown as Doc[]) : docs;
 
   if (col === "faqs") return (
     <div className="mt-8 space-y-3">{docs.map((d) => (
@@ -57,13 +59,13 @@ export default function PublicList({ col, lang }: { col: "courses" | "teachers" 
   );
   if (col === "pages") return <div className="mt-8 whitespace-pre-line rounded border border-gold-200 bg-white p-6">{tx(docs[0], "body", lang)}</div>;
   return (
-    <div className="mt-8 grid gap-4 sm:grid-cols-2">{docs.map((d) => (
+    <div className="mt-8 grid gap-4 sm:grid-cols-2">{list.map((d) => (
       <article key={d.id} className="rounded border border-gold-200 bg-white p-5">
         {col === "teachers" && typeof d.photo === "string" && d.photo && /* eslint-disable-next-line @next/next/no-img-element */ <img src={d.photo} alt={tx(d, "name", lang)} loading="lazy" className="mb-3 h-24 w-24 rounded-full object-cover" />}
         <h2 className="font-serif text-xl text-sage-900">{tx(d, col === "courses" ? "title" : "name", lang)}</h2>
         {col === "teachers" && <p className="mt-1 text-sm text-gold-600">{tx(d, "qualifications", lang)}</p>}
         <p className="mt-2 whitespace-pre-line text-sage-700">{tx(d, col === "courses" ? "description" : "bio", lang)}</p>
-        {col === "courses" && <Link href={`/${lang}/pay?course=${d.id}`} className="mt-3 inline-block rounded bg-sage-700 px-4 py-2 text-sm text-white">{lang === "bn" ? "ভর্তি / পেমেন্ট" : "Enroll / Pay"}</Link>}
+        {col === "courses" && <div className="mt-4 flex flex-wrap gap-3"><Link href={`/${lang}/courses/${d.id}`} className="rounded-full bg-navy-900 px-5 py-2 text-sm font-semibold text-white">{lang === "bn" ? "বিস্তারিত দেখুন" : "View details"}</Link><Link href={`/${lang}/trial?course=${d.id}`} className="rounded-full border border-navy-900 px-5 py-2 text-sm font-semibold text-navy-900">{lang === "bn" ? "ফ্রি ট্রায়াল" : "Free trial"}</Link></div>}
         {col === "courses" && tx(d, "price", lang) && <p className="mt-3 font-medium text-sage-900">{tx(d, "price", lang)}</p>}
       </article>
     ))}</div>

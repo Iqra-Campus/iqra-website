@@ -43,3 +43,10 @@ body { padding-bottom: env(safe-area-inset-bottom); }
 .icon-float { animation: float-soft 4s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .icon-float { animation: none; } .card-glow { transition: none; } }
 @media (min-width: 1024px) { .snap-row { max-width: 74rem; margin-inline: auto; padding-inline: 1rem; } }
+
+/* Navy panel with a fine dot pattern (a plain Tailwind gradient would be overridden by .islamic-pattern) */
+.navy-hero {
+  background:
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,.08) 1px, transparent 0) 0 0 / 22px 22px,
+    linear-gradient(135deg, #060F2B 0%, #0A1A3F 50%, #1B3677 100%);
+}

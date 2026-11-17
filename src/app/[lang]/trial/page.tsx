@@ -3,6 +3,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { addDoc, collection, getDocs, query, serverTimestamp, where } from "firebase/firestore";
 import { firebaseConfigured, getDb } from "@/lib/firebase";
+import { courseDocs } from "@/content/courses";
 
 const L = {
   en: { title: "Book a Free Trial Class", name: "Parent / student name", email: "Email", phone: "Contact number", age: "Student age", country: "Country", course: "Course", general: "General inquiry / not sure yet", date: "Preferred date", time: "Preferred time", tz: "Time zone", msg: "Additional message (optional)", submit: "Send request", sending: "Sending…", ok: "Your request has been received. We will contact you to confirm; it is not confirmed yet.", fail: "We could not save your request. Please check your connection and try again.", nocfg: "Booking is not available yet. Please contact us directly." },
@@ -22,7 +23,7 @@ export default function Trial() {
   useEffect(() => {
     if (!firebaseConfigured) return;
     getDocs(query(collection(getDb(), "courses"), where("status", "==", "published")))
-      .then((s) => setCourses(s.docs.map((d) => { const x = d.data(); return { id: d.id, title: x.title?.[lang] ?? x.title?.en ?? d.id }; })))
+      .then((s) => { const rows = s.docs.map((d) => { const x = d.data(); return { id: d.id, title: x.title?.[lang] ?? x.title?.en ?? d.id }; }); setCourses(rows.length ? rows : courseDocs().map((c) => ({ id: c.id, title: c.title[lang] }))); })
       .catch(() => setCourses([]));
   }, [lang]);
 
