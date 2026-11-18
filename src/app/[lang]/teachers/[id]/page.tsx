@@ -69,19 +69,19 @@ export default function TeacherProfile() {
 
   return (
     <div>
-      <section className="navy-hero relative text-white">
+      <section className="soft-hero border-b border-gold-200">
         <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 px-5 py-12 text-center md:flex-row md:items-center md:py-16 md:text-left">
-          <div className="h-44 w-44 shrink-0 overflow-hidden rounded-3xl border-4 border-gold-400 bg-navy-800 shadow-2xl md:h-52 md:w-52">
-            {photo ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={photo} alt={name} className="h-full w-full object-cover" /> : <svg viewBox="0 0 120 120" className="h-full w-full" aria-hidden="true"><circle cx="60" cy="46" r="20" fill="#9FB2E0" opacity=".7" /><path d="M20 118c4-26 22-38 40-38s36 12 40 38z" fill="#9FB2E0" opacity=".5" /></svg>}
+          <div className="h-44 w-44 shrink-0 overflow-hidden rounded-3xl border-4 border-white bg-sage-100 shadow-xl shadow-navy-900/20 md:h-52 md:w-52">
+            {photo ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={photo} alt={name} className="h-full w-full object-cover" /> : <svg viewBox="0 0 120 120" className="h-full w-full" aria-hidden="true"><circle cx="60" cy="46" r="20" fill="#C3CCE6" /><path d="M20 118c4-26 22-38 40-38s36 12 40 38z" fill="#A9B5D9" /></svg>}
           </div>
           <div>
-            <Link href={`/${lang}/teachers`} className="text-sm text-navy-200 underline">{t.back}</Link>
-            <h1 className="mt-3 font-serif text-4xl leading-tight md:text-5xl">{name}</h1>
-            {tx(teacher, "qualifications", lang) && <p className="mt-2 text-sm font-bold uppercase tracking-wide text-gold-400">{tx(teacher, "qualifications", lang)}</p>}
-            {tx(teacher, "bio", lang) && <p className="mt-3 max-w-2xl whitespace-pre-line text-navy-200">{tx(teacher, "bio", lang)}</p>}
+            <Link href={`/${lang}/teachers`} className="text-sm text-sage-700 underline">{t.back}</Link>
+            <h1 className="mt-3 font-serif text-4xl leading-tight text-navy-900 md:text-5xl">{name}</h1>
+            {tx(teacher, "qualifications", lang) && <p className="mt-2 text-sm font-bold uppercase tracking-wide text-gold-600">{tx(teacher, "qualifications", lang)}</p>}
+            {tx(teacher, "bio", lang) && <p className="mt-3 max-w-2xl whitespace-pre-line text-sage-700">{tx(teacher, "bio", lang)}</p>}
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <Link href={`/${lang}/trial?teacher=${teacher.id}`} className="rounded-full bg-gold-400 px-7 py-3.5 text-center font-semibold text-navy-900 hover:bg-gold-200">{t.book} {name}</Link>
-              {courses.length > 0 && <a href="#courses" className="rounded-full border border-white/40 px-7 py-3.5 text-center font-semibold hover:bg-white/10">{t.courses}</a>}
+              <Link href={`/${lang}/trial?teacher=${teacher.id}`} className="rounded-full bg-navy-900 px-7 py-3.5 text-center font-semibold text-white hover:bg-navy-800">{t.book} {name}</Link>
+              {courses.length > 0 && <a href="#courses" className="rounded-full border border-navy-900 px-7 py-3.5 text-center font-semibold text-navy-900 hover:bg-white">{t.courses}</a>}
             </div>
           </div>
         </div>
@@ -122,10 +122,10 @@ export default function TeacherProfile() {
               </blockquote>))}</div>
           </Section>)}
 
-        <section className="navy-hero rounded-3xl px-6 py-10 text-center text-white">
-          <h2 className="font-serif text-2xl">{t.ctaTitle} {name}</h2>
-          <p className="mt-2 text-navy-200">{t.ctaText}</p>
-          <Link href={`/${lang}/trial?teacher=${teacher.id}`} className="mt-5 inline-block rounded-full bg-gold-400 px-7 py-3 font-semibold text-navy-900">{t.book} {name}</Link>
+        <section className="soft-hero rounded-3xl border border-gold-200 px-6 py-10 text-center shadow-lg shadow-navy-900/10">
+          <h2 className="font-serif text-2xl text-navy-900">{t.ctaTitle} {name}</h2>
+          <p className="mt-2 text-sage-700">{t.ctaText}</p>
+          <Link href={`/${lang}/trial?teacher=${teacher.id}`} className="mt-5 inline-block rounded-full bg-navy-900 px-7 py-3 font-semibold text-white">{t.book} {name}</Link>
         </section>
       </div>
     </div>

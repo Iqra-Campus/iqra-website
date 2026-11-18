@@ -14,9 +14,9 @@ const T = {
 function Avatar() {
   return (
     <svg viewBox="0 0 120 120" className="h-full w-full" role="img" aria-label="Teacher photo placeholder" preserveAspectRatio="xMidYMid slice">
-      <rect width="120" height="120" fill="#12275C" />
-      <circle cx="60" cy="46" r="20" fill="#9FB2E0" opacity="0.7" />
-      <path d="M20 118c4-26 22-38 40-38s36 12 40 38z" fill="#9FB2E0" opacity="0.5" />
+      <rect width="120" height="120" fill="#E9EDF8" />
+      <circle cx="60" cy="46" r="20" fill="#C3CCE6" />
+      <path d="M20 118c4-26 22-38 40-38s36 12 40 38z" fill="#A9B5D9" />
     </svg>
   );
 }

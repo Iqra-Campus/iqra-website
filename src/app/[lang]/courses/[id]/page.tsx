@@ -66,17 +66,19 @@ export default function CourseDetail() {
 
   return (
     <div>
-      <section className="navy-hero relative overflow-hidden text-white">
-        {photo && /* eslint-disable-next-line @next/next/no-img-element */ <img src={photo} alt="" className="absolute inset-0 h-full w-full object-cover opacity-30" />}
-        <div className="relative mx-auto max-w-4xl px-5 py-14 md:py-20">
-          <Link href={`/${lang}/courses`} className="text-sm text-navy-200 underline">{t.back}</Link>
-          {tx(course, "tag", lang) && <p className="mt-5"><span className="rounded-full bg-white/90 px-3 py-1 text-xs font-bold uppercase tracking-wide text-navy-900">{tx(course, "tag", lang)}</span></p>}
-          <h1 className="mt-4 font-serif text-4xl leading-tight md:text-5xl">{tx(course, "title", lang)}</h1>
-          <p className="mt-4 max-w-2xl whitespace-pre-line text-lg text-navy-200">{tx(course, "description", lang)}</p>
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-            <Link href={`/${lang}/trial?course=${course.id}`} className="rounded-full bg-gold-400 px-7 py-3.5 text-center font-semibold text-navy-900 hover:bg-gold-200">{t.trial}</Link>
-            <Link href={`/${lang}/pay?course=${course.id}`} className="rounded-full border border-white/40 px-7 py-3.5 text-center font-semibold text-white hover:bg-white/10">{t.enroll}</Link>
+      <section className="soft-hero border-b border-gold-200">
+        <div className="mx-auto grid max-w-5xl items-center gap-8 px-5 py-12 md:grid-cols-2 md:py-16">
+          <div>
+            <Link href={`/${lang}/courses`} className="text-sm text-sage-700 underline">{t.back}</Link>
+            {tx(course, "tag", lang) && <p className="mt-5"><span className="rounded-full bg-navy-900 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">{tx(course, "tag", lang)}</span></p>}
+            <h1 className="mt-4 font-serif text-4xl leading-tight text-navy-900 md:text-5xl">{tx(course, "title", lang)}</h1>
+            <p className="mt-4 whitespace-pre-line text-lg text-sage-700">{tx(course, "description", lang)}</p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Link href={`/${lang}/trial?course=${course.id}`} className="rounded-full bg-navy-900 px-7 py-3.5 text-center font-semibold text-white hover:bg-navy-800">{t.trial}</Link>
+              <Link href={`/${lang}/pay?course=${course.id}`} className="rounded-full border border-navy-900 px-7 py-3.5 text-center font-semibold text-navy-900 hover:bg-white">{t.enroll}</Link>
+            </div>
           </div>
+          {photo && <div className="overflow-hidden rounded-3xl border-4 border-white shadow-xl shadow-navy-900/20">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={photo} alt={tx(course, "title", lang)} className="aspect-video w-full object-cover" /></div>}
         </div>
       </section>
 
@@ -106,12 +108,12 @@ export default function CourseDetail() {
               <details key={i} className="rounded-xl border border-gold-200 p-4"><summary className="cursor-pointer font-medium">{x.q}</summary>{x.a && <p className="mt-2 whitespace-pre-line text-sage-700">{x.a}</p>}</details>))}</div>
           </Section>)}
 
-        <section className="navy-hero rounded-3xl px-6 py-10 text-center text-white">
-          <h2 className="font-serif text-2xl">{t.ctaTitle}</h2>
-          <p className="mt-2 text-navy-200">{t.ctaText}</p>
+        <section className="soft-hero rounded-3xl border border-gold-200 px-6 py-10 text-center shadow-lg shadow-navy-900/10">
+          <h2 className="font-serif text-2xl text-navy-900">{t.ctaTitle}</h2>
+          <p className="mt-2 text-sage-700">{t.ctaText}</p>
           <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
-            <Link href={`/${lang}/trial?course=${course.id}`} className="rounded-full bg-gold-400 px-7 py-3 font-semibold text-navy-900">{t.trial}</Link>
-            <Link href={`/${lang}/pay?course=${course.id}`} className="rounded-full border border-white/40 px-7 py-3 font-semibold">{t.enroll}</Link>
+            <Link href={`/${lang}/trial?course=${course.id}`} className="rounded-full bg-navy-900 px-7 py-3 font-semibold text-white">{t.trial}</Link>
+            <Link href={`/${lang}/pay?course=${course.id}`} className="rounded-full border border-navy-900 px-7 py-3 font-semibold text-navy-900">{t.enroll}</Link>
           </div>
         </section>
       </div>

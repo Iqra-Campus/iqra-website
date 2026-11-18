@@ -72,37 +72,37 @@ export default function HomeSections({ lang }: { lang: Locale }) {
       {/* Ticker */}
       <div className="overflow-hidden border-y border-gold-200 bg-white py-4" aria-hidden="true">
         <div className="ticker-track flex w-max">
-          {[0, 1].map((k) => <div key={k} className="flex">{tick.map((x, i) => <span key={`${k}-${i}`} className="flex items-center whitespace-nowrap px-6 text-lg font-semibold text-navy-900"><span className="mr-3 flex h-9 w-9 items-center justify-center rounded-full bg-navy-900 text-gold-400"><Icon name={x.icon} className="h-5 w-5" /></span>{x.label}</span>)}</div>)}
+          {[0, 1].map((k) => <div key={k} className="flex">{tick.map((x, i) => <span key={`${k}-${i}`} className="flex items-center whitespace-nowrap px-6 text-lg font-semibold text-navy-900"><span className="mr-3 flex h-9 w-9 items-center justify-center rounded-full bg-gold-200 text-navy-900"><Icon name={x.icon} className="h-5 w-5" /></span>{x.label}</span>)}</div>)}
         </div>
       </div>
 
-      {/* Why: dark glowing cards (swipe on phones, grid on large screens) */}
-      <section className="dark-glow islamic-pattern mt-14 py-16 text-white">
+      {/* Why: light cream cards (swipe on phones, grid on large screens) */}
+      <section className="soft-band mt-14 py-16">
         <div className="mx-auto max-w-3xl px-5 text-center lg:max-w-6xl lg:px-6 lg:text-left">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-gold-400">— {t.whyEyebrow}</p>
-          <h2 className="mt-3 font-serif text-3xl drop-shadow md:text-4xl">{t.whyTitle}</h2>
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-gold-600">— {t.whyEyebrow}</p>
+          <h2 className="mt-3 font-serif text-3xl text-navy-900 md:text-4xl">{t.whyTitle}</h2>
           <div className="mx-auto mt-4 h-1 w-24 rounded bg-gold-400 lg:mx-0" />
-          <p className="mt-4 text-navy-200">{t.whySub}</p>
+          <p className="mt-4 text-sage-700">{t.whySub}</p>
         </div>
         <div className="mt-10 lg:hidden">
-          <Carousel dark label={t.whyTitle}>
+          <Carousel label={t.whyTitle}>
             {t.features.map(([h, p], i) => (
-              <article key={h} className="card-glow relative w-[82%] max-w-sm rounded-3xl p-7">
-                <span className="num absolute right-6 top-4 font-serif text-6xl font-bold">{String(i + 1).padStart(2, "0")}</span>
-                <span className="icon-float mt-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-200 to-gold-400 text-navy-900 shadow-lg shadow-black/30"><Icon name={featureIcons[i]} className="h-7 w-7" /></span>
-                <h3 className="mt-6 font-serif text-2xl text-white">{h}</h3>
-                <p className="mt-2 text-navy-200">{p}</p>
+              <article key={h} className="card-soft w-[82%] max-w-sm rounded-3xl p-7">
+                <span className="num absolute right-6 top-5 font-serif text-6xl font-bold">{String(i + 1).padStart(2, "0")}</span>
+                <span className="icon-float mt-2 flex h-14 w-14 items-center justify-center rounded-2xl bg-navy-900 text-gold-400 shadow-lg shadow-navy-900/25"><Icon name={featureIcons[i]} className="h-7 w-7" /></span>
+                <h3 className="mt-6 font-serif text-2xl text-navy-900">{h}</h3>
+                <p className="mt-2 text-sage-700">{p}</p>
               </article>))}
           </Carousel>
         </div>
         <div className="mx-auto mt-12 hidden max-w-6xl grid-cols-3 gap-6 px-6 lg:grid">
           {t.features.map(([h, p], i) => (
             <Reveal key={h} delay={i * 90}>
-              <article className="card-glow relative h-full rounded-3xl p-8">
-                <span className="num absolute right-7 top-5 font-serif text-6xl font-bold">{String(i + 1).padStart(2, "0")}</span>
-                <span className="icon-float flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-gold-200 to-gold-400 text-navy-900 shadow-lg shadow-black/30"><Icon name={featureIcons[i]} className="h-7 w-7" /></span>
-                <h3 className="mt-6 font-serif text-2xl text-white">{h}</h3>
-                <p className="mt-2 text-navy-200">{p}</p>
+              <article className="card-soft h-full rounded-3xl p-8">
+                <span className="num absolute right-7 top-6 font-serif text-6xl font-bold">{String(i + 1).padStart(2, "0")}</span>
+                <span className="icon-float flex h-14 w-14 items-center justify-center rounded-2xl bg-navy-900 text-gold-400 shadow-lg shadow-navy-900/25"><Icon name={featureIcons[i]} className="h-7 w-7" /></span>
+                <h3 className="mt-6 font-serif text-2xl text-navy-900">{h}</h3>
+                <p className="mt-2 text-sage-700">{p}</p>
               </article>
             </Reveal>))}
         </div>
@@ -120,11 +120,11 @@ export default function HomeSections({ lang }: { lang: Locale }) {
             <Carousel label={t.cTitle}>
               {shownCourses.map((c) => (
                 <article key={c.id} className="w-[85%] max-w-sm overflow-hidden rounded-3xl bg-white shadow-xl shadow-navy-900/15 ring-1 ring-gold-200 transition-transform duration-300 hover:-translate-y-1.5">
-                  <div className="navy-hero relative flex h-48 items-end p-5">
+                  <div className={`relative flex h-48 items-end p-5 ${typeof c.photo === "string" && c.photo ? "" : "soft-hero"}`}>
                     {typeof c.photo === "string" && c.photo && /* eslint-disable-next-line @next/next/no-img-element */ <img src={c.photo} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />}
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 to-transparent" />
+                    {typeof c.photo === "string" && c.photo && <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 to-transparent" />}
                     {tx(c, "tag", lang) && <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-navy-900">{tx(c, "tag", lang)}</span>}
-                    <h3 className="relative font-serif text-2xl text-white">{tx(c, "title", lang)}</h3>
+                    <h3 className={`relative font-serif text-2xl ${typeof c.photo === "string" && c.photo ? "text-white" : "text-navy-900"}`}>{tx(c, "title", lang)}</h3>
                   </div>
                   <div className="p-5">
                     <p className="line-clamp-3 whitespace-pre-line text-sm text-sage-700">{tx(c, "description", lang)}</p>
@@ -166,10 +166,10 @@ export default function HomeSections({ lang }: { lang: Locale }) {
           </div>
         </section>)}
 
-      <section className="navy-hero mx-4 mt-16 rounded-3xl px-6 py-12 text-center text-white md:mx-auto md:max-w-4xl">
-        <h2 className="font-serif text-3xl">{t.ctaTitle}</h2>
-        <p className="mt-3 text-navy-300">{t.ctaText}</p>
-        <Link href={`/${lang}/trial`} className="mt-6 inline-block rounded-full bg-gold-400 px-7 py-3 font-semibold text-navy-900 hover:bg-gold-200">{t.cta}</Link>
+      <section className="soft-hero mx-4 mt-16 rounded-3xl border border-gold-200 px-6 py-12 text-center shadow-lg shadow-navy-900/10 md:mx-auto md:max-w-4xl">
+        <h2 className="font-serif text-3xl text-navy-900">{t.ctaTitle}</h2>
+        <p className="mt-3 text-sage-700">{t.ctaText}</p>
+        <Link href={`/${lang}/trial`} className="mt-6 inline-block rounded-full bg-navy-900 px-7 py-3 font-semibold text-white hover:bg-navy-800">{t.cta}</Link>
       </section>
     </>
   );

@@ -50,3 +50,30 @@ body { padding-bottom: env(safe-area-inset-bottom); }
     radial-gradient(circle at 1px 1px, rgba(255,255,255,.08) 1px, transparent 0) 0 0 / 22px 22px,
     linear-gradient(135deg, #060F2B 0%, #0A1A3F 50%, #1B3677 100%);
 }
+
+/* Light, cream-and-gold surfaces (keeps the whole site in one colour family) */
+.soft-band {
+  background:
+    radial-gradient(60% 80% at 8% 0%, rgba(235,221,174,.6), transparent 70%),
+    radial-gradient(50% 70% at 100% 100%, rgba(235,221,174,.45), transparent 70%),
+    linear-gradient(180deg, #F7F1E1 0%, #F4EEDD 100%);
+}
+.soft-hero {
+  background:
+    radial-gradient(circle at 1px 1px, rgba(10,26,63,.06) 1px, transparent 0) 0 0 / 22px 22px,
+    linear-gradient(135deg, #FBF8F1 0%, #F4EEDD 55%, #EBDDAE 150%);
+}
+.card-soft {
+  position: relative; overflow: hidden;
+  background: linear-gradient(160deg, #FFFFFF 0%, #FBF6E8 100%);
+  border: 1px solid rgba(207,174,87,.55);
+  box-shadow: 0 10px 28px rgba(10,26,63,.12);
+  transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+}
+.card-soft::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: linear-gradient(90deg, #EBDDAE, #CFAE57, #A78532); }
+.card-soft:hover { transform: translateY(-8px); border-color: rgba(167,133,50,.9); box-shadow: 0 22px 40px rgba(10,26,63,.18), 0 0 26px rgba(207,174,87,.35); }
+.card-soft .num { background: linear-gradient(180deg, #CFAE57, #A78532); -webkit-background-clip: text; background-clip: text; color: transparent; }
+@media (prefers-reduced-motion: reduce) { .card-soft { transition: none; } }
+
+/* Give carousel cards room so their shadows are not clipped by the scroll container */
+.snap-row { padding-top: .5rem; padding-bottom: 2.25rem; margin-bottom: -1.25rem; }
