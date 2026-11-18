@@ -4,7 +4,7 @@ import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, s
 import { getDb } from "@/lib/firebase";
 import { photoToDataUrl } from "@/lib/image";
 
-export type Field = { key: string; label: string; bilingual?: boolean; multiline?: boolean; number?: boolean; image?: boolean; picks?: "teachers"; help?: string };
+export type Field = { key: string; label: string; bilingual?: boolean; multiline?: boolean; number?: boolean; image?: boolean; wide?: boolean; picks?: "teachers"; help?: string };
 type Item = { id: string; status?: string; [k: string]: unknown };
 export type Seed = { id: string; data: Record<string, unknown> }[];
 
@@ -111,8 +111,8 @@ export default function ContentManager({ col, fields, singletonId, prefill, idFi
               </span>
             ) : f.image ? (
               <span className="mt-1 flex items-center gap-3">
-                {edit.v[k] ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={edit.v[k]} alt="" className="h-16 w-16 rounded-full object-cover" /> : <span className="flex h-16 w-16 items-center justify-center rounded-full bg-sage-100 text-xs text-sage-700">No photo</span>}
-                <input type="file" accept="image/*" onChange={async (e) => { const file = e.target.files?.[0]; if (!file) return; try { set(k, await photoToDataUrl(file)); setMsg(""); } catch (err) { setMsg((err as Error).message); } }} className="text-xs" />
+                {edit.v[k] ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={edit.v[k]} alt="" className={f.wide ? "h-20 w-36 rounded-lg object-cover" : "h-16 w-16 rounded-full object-cover"} /> : <span className={`flex items-center justify-center bg-sage-100 text-xs text-sage-700 ${f.wide ? "h-20 w-36 rounded-lg" : "h-16 w-16 rounded-full"}`}>No photo</span>}
+                <input type="file" accept="image/*" onChange={async (e) => { const file = e.target.files?.[0]; if (!file) return; try { set(k, await photoToDataUrl(file, 480, f.wide)); setMsg(""); } catch (err) { setMsg((err as Error).message); } }} className="text-xs" />
                 {edit.v[k] && <button type="button" onClick={() => set(k, "")} className="text-xs text-red-700 underline">Remove</button>}
               </span>
             ) : f.multiline ? <textarea rows={5} value={edit.v[k]} onChange={(e) => set(k, e.target.value)} className={inp} />

@@ -76,13 +76,22 @@ export default function PublicList({ col, lang }: { col: "courses" | "teachers" 
   );
   if (col === "pages") return <div className="mt-8 whitespace-pre-line rounded border border-gold-200 bg-white p-6">{tx(docs[0], "body", lang)}</div>;
   return (
-    <div className="mt-8 grid gap-4 sm:grid-cols-2">{list.map((d) => (
-      <article key={d.id} className="rounded border border-gold-200 bg-white p-5">
-        <h2 className="font-serif text-xl text-sage-900">{tx(d, "title", lang)}</h2>
-        <p className="mt-2 whitespace-pre-line text-sage-700">{tx(d, "description", lang)}</p>
-        {col === "courses" && <div className="mt-4 flex flex-wrap gap-3"><Link href={`/${lang}/courses/${d.id}`} className="rounded-full bg-navy-900 px-5 py-2 text-sm font-semibold text-white">{lang === "bn" ? "বিস্তারিত দেখুন" : "View details"}</Link><Link href={`/${lang}/trial?course=${d.id}`} className="rounded-full border border-navy-900 px-5 py-2 text-sm font-semibold text-navy-900">{lang === "bn" ? "ফ্রি ট্রায়াল" : "Free trial"}</Link></div>}
-        {col === "courses" && tx(d, "price", lang) && <p className="mt-3 font-medium text-sage-900">{tx(d, "price", lang)}</p>}
-      </article>
-    ))}</div>
+    <div className="mt-8 grid gap-6 sm:grid-cols-2">{list.map((d) => (
+      <article key={d.id} className="overflow-hidden rounded-3xl bg-white shadow-xl shadow-navy-900/15 ring-1 ring-gold-200 transition-transform duration-300 hover:-translate-y-1.5">
+        <Link href={`/${lang}/courses/${d.id}`} className="navy-hero relative flex aspect-video items-end p-5">
+          {typeof d.photo === "string" && d.photo && /* eslint-disable-next-line @next/next/no-img-element */ <img src={d.photo} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />}
+          <span className="absolute inset-0 bg-gradient-to-t from-navy-950/80 to-transparent" />
+          {tx(d, "tag", lang) && <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-navy-900">{tx(d, "tag", lang)}</span>}
+          <h2 className="relative font-serif text-2xl text-white">{tx(d, "title", lang)}</h2>
+        </Link>
+        <div className="p-5">
+          <p className="line-clamp-3 whitespace-pre-line text-sm text-sage-700">{tx(d, "description", lang)}</p>
+          {tx(d, "price", lang) && <p className="mt-3 font-semibold text-navy-900">{tx(d, "price", lang)}</p>}
+          <div className="mt-4 flex flex-wrap gap-3 border-t border-gold-200 pt-4">
+            <Link href={`/${lang}/courses/${d.id}`} className="rounded-full bg-navy-900 px-5 py-2 text-sm font-semibold text-white">{lang === "bn" ? "বিস্তারিত দেখুন" : "View details"}</Link>
+            <Link href={`/${lang}/trial?course=${d.id}`} className="rounded-full border border-navy-900 px-5 py-2 text-sm font-semibold text-navy-900">{lang === "bn" ? "ফ্রি ট্রায়াল" : "Free trial"}</Link>
+          </div>
+        </div>
+      </article>))}</div>
   );
 }

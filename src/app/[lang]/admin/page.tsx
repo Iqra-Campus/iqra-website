@@ -33,7 +33,7 @@ const modules: Record<string, { col: string; singletonId?: string; fields: Field
     { key: "title", label: "Headline", bilingual: true }, { key: "text", label: "Details", bilingual: true, multiline: true }] },
   Courses: { col: "courses", idField: "slug", seed: starterCourses.map((c) => ({ id: c.id, data: c.data as unknown as Record<string, unknown> })), fields: [
     { key: "slug", label: "Web address name (letters, numbers, hyphens; cannot be changed later)", help: "Example: quran-reading  →  /en/courses/quran-reading" },
-    { key: "photo", label: "Course photo (optional)", image: true },
+    { key: "photo", label: "Course photo (landscape works best; it is cropped to 16:9)", image: true, wide: true },
     { key: "title", label: "Course name", bilingual: true },
     { key: "tag", label: "Short tag (e.g. Ages 4–12)", bilingual: true },
     { key: "description", label: "Short description (shown on cards)", bilingual: true, multiline: true },
