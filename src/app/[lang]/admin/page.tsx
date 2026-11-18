@@ -25,7 +25,7 @@ const modules: Record<string, { col: string; singletonId?: string; fields: Field
   Refund: { col: "pages", singletonId: "refund", prefill: { body: defaultPages.refund }, fields: [{ key: "body", label: "Refund Policy text", bilingual: true, multiline: true }] },
   Reviews: { col: "reviews", fields: [
     { key: "name", label: "Reviewer name" }, { key: "country", label: "Country" }, { key: "rating", label: "Rating (1-5)", number: true },
-    { key: "text", label: "Review text", bilingual: true, multiline: true }, { key: "order", label: "Display order", number: true }] },
+    { key: "text", label: "Review text", bilingual: true, multiline: true }, { key: "teacherIds", label: "Show on these teachers' profiles (optional)", picks: "teachers" }, { key: "order", label: "Display order", number: true }] },
   Blog: { col: "blogPosts", fields: [
     { key: "title", label: "Title", bilingual: true }, { key: "summary", label: "Short summary", bilingual: true },
     { key: "body", label: "Article text", bilingual: true, multiline: true }, { key: "author", label: "Author name" }] },
@@ -47,12 +47,19 @@ const modules: Record<string, { col: string; singletonId?: string; fields: Field
     { key: "teacherIds", label: "Teachers of this course", picks: "teachers" },
     { key: "faqText", label: "Questions and answers for this course", bilingual: true, multiline: true, help: "For each question: the question on the first line, the answer on the next lines. Leave a blank line between questions." },
     { key: "order", label: "Display order (1 shows first)", number: true }] },
-  Teachers: { col: "teachers", fields: [
-    { key: "photo", label: "Photo (square works best)", image: true }, { key: "name", label: "Name", bilingual: true }, { key: "qualifications", label: "Qualifications", bilingual: true }, { key: "bio", label: "Biography", bilingual: true, multiline: true }, { key: "order", label: "Display order", number: true }] },
-  "Payment Methods": { col: "paymentMethods", fields: [
-    { key: "name", label: "Method name (e.g. bKash, Bank)", bilingual: true }, { key: "accountNumber", label: "Account / number" }, { key: "accountName", label: "Account holder name" },
-    { key: "bankName", label: "Bank name (if bank)" }, { key: "branch", label: "Branch (optional)" }, { key: "swift", label: "SWIFT / IBAN (optional)" },
-    { key: "currency", label: "Currency (BDT, USD, EGP...)" }, { key: "instructions", label: "Instructions for students", bilingual: true, multiline: true }, { key: "order", label: "Display order", number: true }] },
+  Teachers: { col: "teachers", idField: "slug", fields: [
+    { key: "slug", label: "Web address name (letters, numbers, hyphens; cannot be changed later)", help: "Example: ustadh-ahmad  →  /en/teachers/ustadh-ahmad" },
+    { key: "photo", label: "Photo (square works best)", image: true },
+    { key: "name", label: "Name", bilingual: true },
+    { key: "qualifications", label: "Short title (shown on cards, e.g. Qur'an & Tajweed)", bilingual: true },
+    { key: "bio", label: "Short introduction", bilingual: true, multiline: true },
+    { key: "education", label: "Education and certificates", bilingual: true, multiline: true, help: "One item per line." },
+    { key: "expertise", label: "Areas of expertise (Quran, Tajweed, Hifz, Arabic...)", bilingual: true, multiline: true, help: "One item per line." },
+    { key: "experience", label: "Teaching experience", bilingual: true, multiline: true },
+    { key: "languages", label: "Languages taught in", bilingual: true },
+    { key: "ages", label: "Age groups taught", bilingual: true },
+    { key: "videoUrl", label: "Introduction video (YouTube link, optional)" },
+    { key: "order", label: "Display order (1 shows first)", number: true }] },
   FAQs: { col: "faqs", fields: [
     { key: "question", label: "Question", bilingual: true }, { key: "answer", label: "Answer", bilingual: true, multiline: true }, { key: "order", label: "Display order", number: true }] },
 };

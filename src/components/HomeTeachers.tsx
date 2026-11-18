@@ -29,9 +29,9 @@ function Item({ c, lang }: { c: Card; lang: Locale }) {
         {c.photo ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={c.photo} alt={c.name} loading="lazy" className="h-full w-full object-cover" /> : <Avatar />}
         {c.qual && <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-navy-900">{c.qual}</span>}
       </div>
-      <h3 className="mt-4 px-2 font-serif text-xl text-navy-900">{c.name}</h3>
+      <h3 className="mt-4 px-2 font-serif text-xl text-navy-900">{c.id.startsWith("demo") ? c.name : <Link href={`/${lang}/teachers/${c.id}`} className="hover:underline">{c.name}</Link>}</h3>
       {c.bio && <p className="mt-1 line-clamp-2 px-2 text-sm text-sage-700">{c.bio}</p>}
-      <Link href={`/${lang}/trial`} className="mt-4 block rounded-full border border-gold-200 py-2.5 text-center text-sm font-semibold text-navy-900 hover:bg-cream">{t.book} →</Link>
+      <Link href={c.id.startsWith("demo") ? `/${lang}/trial` : `/${lang}/trial?teacher=${c.id}`} className="mt-4 block rounded-full border border-gold-200 py-2.5 text-center text-sm font-semibold text-navy-900 hover:bg-cream">{t.book} →</Link>
     </article>
   );
 }

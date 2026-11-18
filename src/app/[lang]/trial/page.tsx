@@ -1,7 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { addDoc, collection, getDocs, query, serverTimestamp, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, query, serverTimestamp, where } from "firebase/firestore";
 import { firebaseConfigured, getDb } from "@/lib/firebase";
 import { courseDocs } from "@/content/courses";
 
@@ -16,10 +16,16 @@ export default function Trial() {
   const t = L[lang] ?? L.en;
   const [courses, setCourses] = useState<Course[]>([]);
   const [pre, setPre] = useState("");
+  const [teacher, setTeacher] = useState<{ id: string; name: string } | null>(null);
   const [state, setState] = useState<"idle" | "sending" | "ok" | "fail">("idle");
   const tz = typeof Intl !== "undefined" ? Intl.DateTimeFormat().resolvedOptions().timeZone : "UTC";
 
-  useEffect(() => { setPre(new URLSearchParams(window.location.search).get("course") ?? ""); }, []);
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    setPre(q.get("course") ?? "");
+    const tid = q.get("teacher");
+    if (tid && firebaseConfigured) getDoc(doc(getDb(), "teachers", tid)).then((s) => { if (s.exists() && s.data().status === "published") setTeacher({ id: s.id, name: s.data().name?.[lang] || s.data().name?.en || "" }); }).catch(() => {});
+  }, [lang]);
   useEffect(() => {
     if (!firebaseConfigured) return;
     getDocs(query(collection(getDb(), "courses"), where("status", "==", "published")))
@@ -37,6 +43,7 @@ export default function Trial() {
       timeZone: get("tz"), status: "pending", createdAt: serverTimestamp(),
     };
     if (get("msg")) data.message = get("msg");
+    if (teacher) data.teacherId = teacher.id;
     setState("sending");
     try { await addDoc(collection(getDb(), "bookings"), data); setState("ok"); } catch { setState("fail"); }
   }
@@ -47,6 +54,7 @@ export default function Trial() {
   return (
     <div className="mx-auto max-w-xl px-4 py-12">
       <h1 className="text-center font-serif text-3xl text-sage-900">{t.title}</h1>
+      {teacher && <p className="mt-4 rounded bg-cream p-3 text-center text-sm">{lang === "bn" ? "শিক্ষক:" : "Teacher:"} <b>{teacher.name}</b></p>}
       <form onSubmit={submit} className="mt-6 grid gap-4 rounded border border-gold-200 bg-white p-6 sm:grid-cols-2">
         <label className="text-sm sm:col-span-2">{t.name}<input name="name" required minLength={2} maxLength={100} className={input} /></label>
         <label className="text-sm">{t.email}<input name="email" type="email" required maxLength={200} className={input} /></label>
